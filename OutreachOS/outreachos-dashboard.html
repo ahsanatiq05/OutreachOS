@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OutreachOS — Cold Email Agency</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #18181f;
+  --border: #2a2a35;
+  --accent: #7c6cfa;
+  --accent2: #fa6c9f;
+  --green: #4ade80;
+  --amber: #fbbf24;
+  --text: #e8e8f0;
+  --muted: #6b6b80;
+  --font: 'Syne', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; display: flex; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px; min-height: 100vh; background: var(--surface);
+  border-right: 1px solid var(--border); display: flex; flex-direction: column;
+  padding: 0; position: fixed; top: 0; left: 0; z-index: 100;
+}
+.logo { padding: 24px 20px 20px; border-bottom: 1px solid var(--border); }
+.logo-mark { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+.logo-mark span { color: var(--accent); }
+.logo-sub { font-size: 10px; color: var(--muted); font-family: var(--mono); margin-top: 2px; letter-spacing: 1px; }
+.nav { padding: 12px 0; flex: 1; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 20px;
+  cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted);
+  border-left: 2px solid transparent; transition: all 0.15s;
+}
+.nav-item:hover { color: var(--text); background: var(--surface2); }
+.nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(124,108,250,0.08); }
+.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+.sidebar-bottom { padding: 16px 20px; border-top: 1px solid var(--border); }
+.api-badge { font-size: 10px; font-family: var(--mono); color: var(--muted); }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); display: inline-block; margin-right: 6px; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+/* MAIN */
+.main { margin-left: 220px; flex: 1; min-height: 100vh; }
+.topbar {
+  padding: 20px 32px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface); position: sticky; top: 0; z-index: 50;
+}
+.page-title { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+.topbar-actions { display: flex; gap: 10px; }
+.btn {
+  padding: 8px 16px; border-radius: 8px; font-family: var(--font);
+  font-size: 13px; font-weight: 600; cursor: pointer; border: none;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #6b5ce7; transform: translateY(-1px); }
+.btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn-danger { background: transparent; color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+.btn-danger:hover { background: rgba(248,113,113,0.1); }
+.btn-sm { padding: 5px 10px; font-size: 11px; border-radius: 6px; }
+.btn-green { background: rgba(74,222,128,0.15); color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
+.btn-green:hover { background: rgba(74,222,128,0.25); }
+.btn-amber { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+.btn-amber:hover { background: rgba(251,191,36,0.25); }
+
+.content { padding: 28px 32px; }
+
+/* PAGES */
+.page { display: none; }
+.page.active { display: block; }
+
+/* STAT CARDS */
+.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 28px; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 20px; position: relative; overflow: hidden;
+}
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+.stat-label { font-size: 11px; color: var(--muted); font-family: var(--mono); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.stat-value { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
+.stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.stat-up { color: var(--green); }
+.stat-revenue { color: var(--accent); }
+
+/* TABLES */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; margin-bottom: 20px;
+}
+.card-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-title { font-size: 14px; font-weight: 700; }
+.card-body { padding: 0; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  text-align: left; padding: 12px 20px; font-size: 10px; font-family: var(--mono);
+  color: var(--muted); border-bottom: 1px solid var(--border);
+  letter-spacing: 1px; text-transform: uppercase; font-weight: 500;
+}
+td { padding: 12px 20px; border-bottom: 1px solid rgba(42,42,53,0.5); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface2); }
+.badge {
+  display: inline-block; padding: 3px 8px; border-radius: 4px;
+  font-size: 10px; font-family: var(--mono); font-weight: 500; letter-spacing: 0.5px;
+}
+.badge-green { background: rgba(74,222,128,0.1); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+.badge-amber { background: rgba(251,191,36,0.1); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+.badge-blue { background: rgba(124,108,250,0.1); color: var(--accent); border: 1px solid rgba(124,108,250,0.2); }
+.badge-red { background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.2); }
+.badge-gray { background: rgba(107,107,128,0.1); color: var(--muted); border: 1px solid rgba(107,107,128,0.2); }
+
+/* FORMS */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200;
+  display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+  padding: 28px; width: 480px; max-width: 95vw; max-height: 90vh; overflow-y: auto;
+}
+.modal h3 { font-size: 18px; font-weight: 800; margin-bottom: 20px; }
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 11px; font-family: var(--mono); color: var(--muted); margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 14px; color: var(--text);
+  font-family: var(--font); font-size: 13px; transition: border 0.15s;
+  outline: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+.form-textarea { min-height: 80px; resize: vertical; }
+.form-select option { background: var(--surface); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+/* ACTIVITY */
+.activity-list { padding: 8px 0; }
+.activity-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 20px; border-bottom: 1px solid rgba(42,42,53,0.4);
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.activity-dot.client { background: var(--accent); }
+.activity-dot.campaign { background: var(--accent2); }
+.activity-dot.ai { background: var(--green); }
+.activity-dot.send { background: var(--amber); }
+.activity-dot.leads { background: #60a5fa; }
+.activity-dot.smtp { background: #c084fc; }
+.activity-dot.scrape { background: #f97316; }
+.activity-msg { font-size: 13px; }
+.activity-time { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-top: 2px; }
+
+/* PROGRESS BAR */
+.progress-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; }
+
+/* EMAIL PREVIEW */
+.email-preview {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px; font-family: var(--mono); font-size: 12px; white-space: pre-wrap;
+  color: var(--text); max-height: 300px; overflow-y: auto; line-height: 1.6;
+}
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 999;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 18px; font-size: 13px;
+  display: none; align-items: center; gap: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.toast.show { display: flex; }
+.toast-icon { font-size: 16px; }
+
+/* SETTINGS */
+.settings-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px; margin-bottom: 20px;
+}
+.settings-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+
+/* LOADING */
+.loading { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 6px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state { text-align: center; padding: 48px 20px; color: var(--muted); }
+.empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-state p { font-size: 14px; }
+
+.rate-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
+.rate-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.rate-label { font-size: 10px; font-family: var(--mono); color: var(--muted); letter-spacing: 1px; margin-bottom: 6px; }
+.rate-value { font-size: 22px; font-weight: 800; }
+
+/* FILE INPUT */
+.file-input-wrap { position: relative; }
+.file-input-wrap input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.file-input-label {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 20px; border: 2px dashed var(--border); border-radius: 8px;
+  font-size: 13px; color: var(--muted); cursor: pointer; transition: all 0.15s;
+}
+.file-input-label:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">Outreach<span>OS</span></div>
+    <div class="logo-sub">COLD EMAIL AGENCY</div>
+  </div>
+  <div class="nav">
+    <div class="nav-item active" onclick="showPage('dashboard')">
+      <span class="nav-icon">◈</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="showPage('clients')">
+      <span class="nav-icon">◎</span> Users
+    </div>
+    <div class="nav-item" onclick="showPage('campaigns')">
+      <span class="nav-icon">◐</span> Campaigns
+    </div>
+    <div class="nav-item" onclick="showPage('leads')">
+      <span class="nav-icon">◉</span> Leads
+    </div>
+    <div class="nav-item" onclick="showPage('prompts')">
+      <span class="nav-icon">✦</span> Email Prompts
+    </div>
+    <div class="nav-item" onclick="showPage('settings')">
+      <span class="nav-icon">◌</span> Settings & Profile
+    </div>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="api-badge"><span class="status-dot"></span>SYSTEM ONLINE</div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="page-title" id="pageTitle">Dashboard</div>
+    <div class="topbar-actions" id="topbarActions"></div>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD PAGE -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Monthly Revenue</div>
+          <div class="stat-value stat-revenue">$<span id="stat-revenue">0</span></div>
+          <div class="stat-sub">Active clients MRR</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Clients</div>
+          <div class="stat-value"><span id="stat-clients">0</span></div>
+          <div class="stat-sub">Total campaigns: <span id="stat-campaigns">0</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Emails Sent</div>
+          <div class="stat-value"><span id="stat-sent">0</span></div>
+          <div class="stat-sub">Total leads: <span id="stat-leads">0</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Calls Booked</div>
+          <div class="stat-value stat-up"><span id="stat-booked">0</span></div>
+          <div class="stat-sub"><span id="stat-replied">0</span> replies received</div>
+        </div>
+      </div>
+      <div class="rate-grid">
+        <div class="rate-card">
+          <div class="rate-label">REPLY RATE</div>
+          <div class="rate-value" id="stat-reply-rate" style="color:var(--accent)">0%</div>
+        </div>
+        <div class="rate-card">
+          <div class="rate-label">BOOKING RATE</div>
+          <div class="rate-value" id="stat-book-rate" style="color:var(--accent2)">0%</div>
+        </div>
+        <div class="rate-card">
+          <div class="rate-label">PIPELINE VALUE</div>
+          <div class="rate-value" id="stat-pipeline" style="color:var(--green)">$0</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Activity Feed</div>
+          <button class="btn btn-ghost btn-sm" onclick="loadStats()">↻ Refresh</button>
+        </div>
+        <div class="activity-list" id="activity-feed">
+          <div class="empty-state"><div class="empty-icon">◌</div><p>No activity yet</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIENTS PAGE -->
+    <div class="page" id="page-clients">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">All Clients</div>
+        </div>
+        <div class="card-body">
+          <table>
+            <thead>
+              <tr><th>Client</th><th>Company</th><th>Monthly Fee</th><th>Campaigns</th><th>Emails</th><th>Calls</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody id="clients-table">
+              <tr><td colspan="8"><div class="empty-state"><div class="empty-icon">◎</div><p>No clients yet — add your first client</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMPAIGNS PAGE -->
+    <div class="page" id="page-campaigns">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">All Campaigns</div>
+        </div>
+        <div class="card-body">
+          <table>
+            <thead>
+              <tr><th>Campaign</th><th>Client</th><th>Target</th><th>Leads</th><th>Sent</th><th>Replies</th><th>Calls</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody id="campaigns-table">
+              <tr><td colspan="9"><div class="empty-state"><div class="empty-icon">◐</div><p>No campaigns yet</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADS PAGE -->
+    <div class="page" id="page-leads">
+      <div style="margin-bottom:16px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <select class="form-select" id="leads-campaign-filter" onchange="loadLeads()" style="width:220px;">
+          <option value="">All Campaigns</option>
+        </select>
+        <span id="leads-count" style="font-size:12px; color:var(--muted); font-family:var(--mono);"></span>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Leads</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-ghost btn-sm" onclick="openUploadModal()">↑ Upload CSV</button>
+            <button class="btn btn-ghost btn-sm" onclick="openScrapeModal()">⊕ Scrape Domain</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteAllLeads()">✕ Delete All Leads</button>
+            <button class="btn btn-amber btn-sm" onclick="openGenerateModal()">✦ AI Generate Emails</button>
+            <button class="btn btn-green btn-sm" onclick="openSendModal()">▶ Send Emails</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <table>
+            <thead>
+              <tr><th style="width: 30px;"><input type="checkbox" id="select-all-leads" onchange="toggleSelectAllLeads(this)"></th><th>Name</th><th>Company</th><th>Role</th><th>Email</th><th>Website</th><th>LinkedIn</th><th>Status</th><th>Email Preview</th><th></th></tr>
+            </thead>
+            <tbody id="leads-table">
+              <tr><td colspan="9"><div class="empty-state"><div class="empty-icon">◉</div><p>No leads yet — upload a CSV or scrape a domain</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPTS PAGE -->
+    <div class="page" id="page-prompts">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">⚡ AI Email Prompt Configuration</div>
+        </div>
+        <div class="card-body" style="padding:24px;">
+          <div class="form-group">
+            <label class="form-label">Select Campaign</label>
+            <select class="form-select" id="prompts-campaign-select" onchange="loadCampaignPrompt()" style="width:100%; max-width:400px;">
+              <option value="">Choose a campaign...</option>
+            </select>
+          </div>
+          
+          <div id="prompt-editor-area" style="display:none; margin-top:24px;">
+            <div class="form-group">
+              <label class="form-label">System Role</label>
+              <input class="form-input" id="edit-prompt-system" value="You are an expert cold email copywriter. Respond ONLY with the email in the requested format." readonly>
+              <p style="font-size:10px; color:var(--muted); margin-top:4px;">The system role is currently global. Modify in app.py if needed.</p>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">User Prompt / Template</label>
+              <textarea class="form-textarea" id="edit-prompt-template" style="min-height:350px; font-family:var(--mono); font-size:12px; line-height:1.5;"></textarea>
+              <p style="font-size:11px; color:var(--muted); margin-top:8px;">
+                Available variables: <code>{target_industry}</code>, <code>{target_role}</code>, <code>{value_prop}</code>, 
+                <code>{first_name}</code>, <code>{last_name}</code>, <code>{company}</code>, <code>{role}</code>, 
+                <code>{linkedin}</code>, <code>{website}</code>
+              </p>
+            </div>
+            
+            <div style="display:flex; gap:12px; margin-top:20px;">
+              <button class="btn btn-primary" onclick="saveCampaignPrompt()">Save Changes</button>
+              <button class="btn btn-ghost" onclick="resetPromptToDefault()">Reset to Default</button>
+            </div>
+          </div>
+          
+          <div id="prompt-empty-state" class="empty-state">
+            <div class="empty-icon">✦</div>
+            <p>Select a campaign above to view and customize its AI email prompt</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS PAGE -->
+    <div class="page" id="page-settings">
+      <div class="settings-card">
+        <h3>🔌 SMTP Configuration</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Configure your email sending server. Works with Gmail, Outlook, Mailgun, SendGrid, etc.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">SMTP Host</label>
+            <input class="form-input" id="smtp-host" placeholder="smtp.gmail.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Port</label>
+            <input class="form-input" id="smtp-port" placeholder="587" type="number">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Username / Email</label>
+            <input class="form-input" id="smtp-user" placeholder="you@example.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password / App Password</label>
+            <input class="form-input" id="smtp-pass" type="password" placeholder="••••••••">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">From Name</label>
+          <input class="form-input" id="smtp-name" placeholder="John Smith">
+        </div>
+        <button class="btn btn-primary" onclick="saveSMTP()">Save SMTP Config</button>
+      </div>
+      <div class="settings-card">
+        <h3>⚡ AI Settings (OpenRouter)</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Your OpenRouter API key is used for email generation. Get one at openrouter.ai.</p>
+        <div class="form-group">
+          <label class="form-label">OpenRouter API Key</label>
+          <input class="form-input" id="api-key-input" type="password" placeholder="sk-or-v1-...">
+        </div>
+        <button class="btn btn-primary" onclick="saveApiKey()">Save API Key</button>
+        <p style="font-size:11px;color:var(--muted);margin-top:10px;">Stored locally in your browser only.</p>
+      </div>
+      <div class="settings-card">
+        <h3>👤 Professional Profile (AI Context)</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">This information is cached in "Smart Memory" and used by the AI to personalize your emails.</p>
+        <div class="form-group">
+          <label class="form-label">Who I Am (Bio / Background)</label>
+          <textarea class="form-textarea" id="profile-bio" style="min-height:120px;" placeholder="I am a CS student at... interested in..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">My Projects / Achievements</label>
+          <textarea class="form-textarea" id="profile-projects" style="min-height:120px;" placeholder="Project A: Built a... Project B: Developed..."></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="saveProfile()">Save Profile & Refresh Cache</button>
+      </div>
+
+      <div class="settings-card">
+        <h3>📋 CSV Format Guide</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">You can upload a CSV with <strong>any</strong> headers. The AI will dynamically read all your custom columns! However, for standard mapping, we recommend these column headers:</p>
+        <div class="email-preview">Name, Email, Company, Role, LinkedIn, Website
+
+Example:
+John Smith, john@acme.com, Acme Corp, CEO, linkedin.com/in/jsmith, acme.com
+Sarah Jones, sarah@techco.io, TechCo, CTO, linkedin.com/in/sjones, techco.io</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODALS -->
+
+<!-- Add Client -->
+<div class="modal-overlay" id="modal-client">
+  <div class="modal">
+    <h3>Add Profile / Client</h3>
+    <div class="form-group">
+      <label class="form-label">Name</label>
+      <input class="form-input" id="new-client-name" placeholder="Jane Smith">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Company / University (Optional)</label>
+      <input class="form-input" id="new-client-company" placeholder="Acme Corp / UCLA">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input class="form-input" id="new-client-email" placeholder="jane@example.com" type="email">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Monthly Retainer ($) - Optional</label>
+      <input class="form-input" id="new-client-fee" placeholder="0" type="number">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-client')">Cancel</button>
+      <button class="btn btn-primary" onclick="createClient()">Save Profile</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Campaign -->
+<div class="modal-overlay" id="modal-campaign">
+  <div class="modal">
+    <h3>New Campaign</h3>
+    <div class="form-group">
+      <label class="form-label">Client</label>
+      <select class="form-select" id="new-camp-client"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Campaign Type</label>
+      <select class="form-select" id="new-camp-type" onchange="updateCampLabels()">
+        <option value="b2b">B2B Sales</option>
+        <option value="internship">Student Internship Outreach</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Campaign Name</label>
+      <input class="form-input" id="new-camp-name" placeholder="Q1 SaaS Outreach">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Target Industry</label>
+        <input class="form-input" id="new-camp-industry" placeholder="SaaS, FinTech, etc.">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Target Role</label>
+        <input class="form-input" id="new-camp-role" placeholder="CEO, CTO, Founder">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" id="label-camp-vp">Value Proposition</label>
+      <textarea class="form-textarea" id="new-camp-vp" placeholder="We help SaaS companies reduce churn by 30% in 90 days..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-campaign')">Cancel</button>
+      <button class="btn btn-primary" onclick="createCampaign()">Create Campaign</button>
+    </div>
+  </div>
+</div>
+<script>
+function updateCampLabels() {
+  const t = document.getElementById('new-camp-type').value;
+  document.getElementById('label-camp-vp').textContent = t === 'internship' ? 'My Skills / Value I Bring' : 'Value Proposition';
+  document.getElementById('new-camp-vp').placeholder = t === 'internship' ? 'I am a CS student experienced in Python, React, and looking for an internship to grow...' : 'We help SaaS companies reduce churn by 30% in 90 days...';
+}
+</script>
+
+<!-- Upload CSV -->
+<div class="modal-overlay" id="modal-upload">
+  <div class="modal">
+    <h3>Upload Leads CSV</h3>
+    <div class="form-group">
+      <label class="form-label">Campaign</label>
+      <select class="form-select" id="upload-campaign-select"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">CSV File</label>
+      <div class="file-input-wrap">
+        <input type="file" id="csv-file" accept=".csv">
+        <div class="file-input-label">
+          <span>📄</span> <span id="csv-filename">Choose CSV file...</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-upload')">Cancel</button>
+      <button class="btn btn-primary" onclick="uploadCSV()">Upload Leads</button>
+    </div>
+  </div>
+</div>
+
+<!-- Scrape Domain -->
+<div class="modal-overlay" id="modal-scrape">
+  <div class="modal">
+    <h3>Scrape Leads from Domain</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Find emails at a company domain using different data sources.</p>
+    <div class="form-group">
+      <label class="form-label">Data Source</label>
+      <select class="form-select" id="scrape-source" onchange="updateScrapeLabels()">
+        <option value="hunter">Hunter.io API</option>
+        <option value="apollo">Apollo.io API</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Campaign</label>
+      <select class="form-select" id="scrape-campaign-select"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Company Domain</label>
+      <input class="form-input" id="scrape-domain" placeholder="acme.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label" id="scrape-key-label">Hunter.io API Key</label>
+      <input class="form-input" id="scrape-api-key" placeholder="Your API key" type="password">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-scrape')">Cancel</button>
+      <button class="btn btn-primary" onclick="scrapeLeads()">Find Leads</button>
+    </div>
+  </div>
+</div>
+
+<!-- Generate Emails -->
+<div class="modal-overlay" id="modal-generate">
+  <div class="modal">
+    <h3>⚡ Groq Email Generation</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Groq will write hyper-personalized cold emails using Llama 3.1 8B (Instant).</p>
+    <div class="form-group">
+      <label class="form-label">Campaign</label>
+      <select class="form-select" id="generate-campaign-select"></select>
+    </div>
+    <div class="form-group" style="margin-top: 10px;">
+      <label class="form-label">Generation Mode</label>
+      <select class="form-select" id="generate-mode">
+        <option value="new">Only new leads (no draft yet)</option>
+        <option value="unsent">Regenerate all unsent drafts</option>
+        <option value="sent">Regenerate already sent emails</option>
+        <option value="all">Regenerate ALL leads in campaign</option>
+      </select>
+      <p style="font-size: 10px; color: var(--muted); margin-top: 4px;">
+        Warning: Regenerating sent/all emails will overwrite existing drafts and set their status back to "ready" for sending.
+      </p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-generate')">Cancel</button>
+      <button class="btn btn-amber" onclick="generateEmails()" id="generate-btn">⚡ Generate with Groq</button>
+    </div>
+  </div>
+</div>
+
+<!-- Send Emails -->
+<div class="modal-overlay" id="modal-send">
+  <div class="modal">
+    <h3>▶ Send Emails</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Sends emails via your SMTP config with a variable delay to avoid spam filters.</p>
+    
+    <div class="form-group" id="send-target-group">
+      <label class="form-label">Target</label>
+      <div id="send-target-text" style="font-size:13px; font-weight:600; margin-bottom:8px;"></div>
+      <div id="send-campaign-wrapper">
+        <select class="form-select" id="send-campaign-select"></select>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Total Sending Duration</label>
+      <div style="display:flex; gap:10px;">
+        <input class="form-input" id="send-duration-val" type="number" value="2" min="0.1" step="0.1">
+        <select class="form-select" id="send-duration-unit">
+          <option value="minutes">Minutes</option>
+          <option value="hours" selected>Hours</option>
+        </select>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Emails will be spaced randomly across this duration</p>
+    </div>
+    
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-send')">Cancel</button>
+      <button class="btn btn-green" onclick="sendEmails()">▶ Start Sending</button>
+    </div>
+  </div>
+</div>
+
+<!-- Resume Upload Modal -->
+<div class="modal-overlay" id="modal-resume">
+  <div class="modal">
+    <h3>Upload Resume for Campaign</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">This file will be attached to every email sent in this campaign.</p>
+    <div class="form-group">
+      <label class="form-label">PDF Resume</label>
+      <div class="file-input-wrap">
+        <input type="file" id="resume-file" accept=".pdf">
+        <div class="file-input-label">
+          <span>📄</span> <span id="resume-filename">Choose PDF...</span>
+        </div>
+      </div>
+    </div>
+    <input type="hidden" id="resume-camp-id">
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-resume')">Cancel</button>
+      <button class="btn btn-primary" onclick="uploadResume()">Upload & Attach</button>
+    </div>
+  </div>
+</div>
+
+<!-- Email Preview -->
+<div class="modal-overlay" id="modal-preview">
+  <div class="modal" style="width:560px;">
+    <h3>Email Preview</h3>
+    <div class="email-preview" id="preview-content"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-preview')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toast-icon">✓</span>
+  <span id="toast-msg">Done</span>
+</div>
+
+<script>
+const API = 'http://localhost:5000/api';
+let currentPage = 'dashboard';
+let allCampaigns = [];
+let refreshTimer = null;
+
+function startAutoRefresh() {
+  if (refreshTimer) return;
+  refreshTimer = setInterval(() => {
+    if (currentPage === 'leads') loadLeads();
+    if (currentPage === 'dashboard') loadStats();
+  }, 5000);
+  toast('Live updates enabled', 'ok');
+}
+
+function stopAutoRefresh() {
+  if (refreshTimer) {
+    clearInterval(refreshTimer);
+    refreshTimer = null;
+  }
+}
+
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.textContent.trim().toLowerCase().includes(page.replace('-','').toLowerCase())) n.classList.add('active');
+  });
+  currentPage = page;
+  document.getElementById('pageTitle').textContent = {
+    dashboard: 'Dashboard', clients: 'Users',
+    campaigns: 'Campaigns', leads: 'Leads', prompts: 'Email Prompts', settings: 'Settings'
+  }[page];
+  const actions = document.getElementById('topbarActions');
+  actions.innerHTML = '';
+  if (page === 'clients') {
+    actions.innerHTML = '<button class="btn btn-primary" onclick="openClientModal()">+ Add Client</button>';
+  } else if (page === 'campaigns') {
+    actions.innerHTML = '<button class="btn btn-primary" onclick="openCampaignModal()">+ New Campaign</button>';
+  }
+  if (page === 'dashboard') loadStats();
+  if (page === 'clients') loadClients();
+  if (page === 'campaigns') loadCampaigns();
+  if (page === 'leads') loadLeadsPage();
+  if (page === 'prompts') loadPromptsPage();
+  if (page === 'settings') loadSMTP();
+}
+
+function toast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast-icon').textContent = type === 'ok' ? '✓' : type === 'err' ? '✕' : '◌';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ── STATS ──
+async function loadStats() {
+  try {
+    const r = await fetch(`${API}/stats`);
+    const d = await r.json();
+    document.getElementById('stat-revenue').textContent = d.monthly_revenue.toLocaleString();
+    document.getElementById('stat-clients').textContent = d.clients;
+    document.getElementById('stat-campaigns').textContent = d.campaigns;
+    document.getElementById('stat-sent').textContent = d.sent;
+    document.getElementById('stat-leads').textContent = d.leads;
+    document.getElementById('stat-booked').textContent = d.booked;
+    document.getElementById('stat-replied').textContent = d.replied;
+    document.getElementById('stat-reply-rate').textContent = d.reply_rate + '%';
+    document.getElementById('stat-book-rate').textContent = d.book_rate + '%';
+    document.getElementById('stat-pipeline').textContent = '$' + (d.booked * 500).toLocaleString();
+    const feed = document.getElementById('activity-feed');
+    if (d.activity.length === 0) {
+      feed.innerHTML = '<div class="empty-state"><div class="empty-icon">◌</div><p>No activity yet</p></div>';
+    } else {
+      feed.innerHTML = d.activity.map(a => `
+        <div class="activity-item">
+          <div class="activity-dot ${a.type}"></div>
+          <div>
+            <div class="activity-msg">${a.message}</div>
+            <div class="activity-time">${new Date(a.created_at).toLocaleString()}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+  } catch(e) { toast('Cannot connect to backend. Is server running?', 'err'); }
+}
+
+// ── CLIENTS ──
+async function loadClients() {
+  try {
+    const r = await fetch(`${API}/clients`);
+    const clients = await r.json();
+    const tbody = document.getElementById('clients-table');
+    if (!clients.length) {
+      tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">◎</div><p>No clients yet</p></div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = clients.map(c => `
+      <tr>
+        <td><strong>${c.name}</strong></td>
+        <td>${c.company}</td>
+        <td style="color:var(--green)">$${c.monthly_fee}/mo</td>
+        <td>${c.campaign_count}</td>
+        <td>${c.total_emails}</td>
+        <td>${c.total_calls}</td>
+        <td><span class="badge badge-green">Active</span></td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteClient(${c.id})">Remove</button></td>
+      </tr>
+    `).join('');
+  } catch(e) { toast('Failed to load clients', 'err'); }
+}
+
+function openClientModal() { openModal('modal-client'); }
+
+async function createClient() {
+  const name = document.getElementById('new-client-name').value.trim();
+  const company = document.getElementById('new-client-company').value.trim() || 'N/A';
+  const email = document.getElementById('new-client-email').value.trim();
+  const fee = document.getElementById('new-client-fee').value || 0;
+  if (!name || !email) { toast('Name and Email are required', 'err'); return; }
+  const r = await fetch(`${API}/clients`, {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({name, company, email, monthly_fee: parseFloat(fee)})
+  });
+  if (r.ok) { closeModal('modal-client'); toast('Profile added!'); loadClients(); }
+}
+
+async function deleteClient(id) {
+  if (!confirm('Remove this client?')) return;
+  await fetch(`${API}/clients/${id}`, {method: 'DELETE'});
+  toast('Client removed'); loadClients();
+}
+
+// ── CAMPAIGNS ──
+async function loadCampaigns() {
+  try {
+    const r = await fetch(`${API}/campaigns`);
+    allCampaigns = await r.json();
+    const tbody = document.getElementById('campaigns-table');
+    if (!allCampaigns.length) {
+      tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">◐</div><p>No campaigns yet</p></div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = allCampaigns.map(c => `
+      <tr>
+        <td><strong>${c.name}</strong></td>
+        <td>${c.client_name}</td>
+        <td><span style="font-size:11px;color:var(--muted)">${c.target_industry} / ${c.target_role}</span></td>
+        <td>${c.lead_count}</td>
+        <td>${c.emails_sent}</td>
+        <td>${c.replies}</td>
+        <td style="color:var(--green)">${c.calls_booked}</td>
+        <td><span class="badge ${c.status==='active'?'badge-green':c.status==='draft'?'badge-gray':'badge-blue'}">${c.status}</span></td>
+        <td>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-ghost btn-sm" onclick="openResumeModal(${c.id})">${c.attachment_path ? '📄 Update Resume' : '⊕ Attach Resume'}</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteCampaign(${c.id})">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  } catch(e) { toast('Failed to load campaigns', 'err'); }
+}
+
+async function openCampaignModal() {
+  const r = await fetch(`${API}/clients`);
+  const clients = await r.json();
+  const sel = document.getElementById('new-camp-client');
+  sel.innerHTML = clients.map(c => `<option value="${c.id}">${c.name} — ${c.company}</option>`).join('');
+  openModal('modal-campaign');
+}
+
+async function createCampaign() {
+  const d = {
+    client_id: document.getElementById('new-camp-client').value,
+    campaign_type: document.getElementById('new-camp-type').value,
+    name: document.getElementById('new-camp-name').value.trim(),
+    target_industry: document.getElementById('new-camp-industry').value.trim(),
+    target_role: document.getElementById('new-camp-role').value.trim(),
+    value_prop: document.getElementById('new-camp-vp').value.trim()
+  };
+  if (!d.name || !d.target_industry) { toast('Fill required fields', 'err'); return; }
+  const r = await fetch(`${API}/campaigns`, {
+    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(d)
+  });
+  if (r.ok) { closeModal('modal-campaign'); toast('Campaign created!'); loadCampaigns(); }
+}
+
+async function deleteCampaign(id) {
+  if (!confirm('Delete campaign and all its leads?')) return;
+  await fetch(`${API}/campaigns/${id}`, {method: 'DELETE'});
+  toast('Campaign deleted'); loadCampaigns();
+}
+
+// ── LEADS ──
+async function loadLeadsPage() {
+  await loadCampaignSelects();
+  loadLeads();
+}
+
+async function loadCampaignSelects() {
+  const r = await fetch(`${API}/campaigns`);
+  allCampaigns = await r.json();
+  const opts = allCampaigns.map(c => `<option value="${c.id}">${c.name} (${c.client_name})</option>`).join('');
+  ['leads-campaign-filter','upload-campaign-select','scrape-campaign-select',
+   'generate-campaign-select','send-campaign-select','prompts-campaign-select'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = (id === 'leads-campaign-filter' ? '<option value="">All Campaigns</option>' : '') + opts;
+  });
+}
+
+async function loadLeads() {
+  const cid = document.getElementById('leads-campaign-filter').value;
+  const url = cid ? `${API}/leads?campaign_id=${cid}` : `${API}/leads`;
+  const r = await fetch(url);
+  const leads = await r.json();
+  document.getElementById('leads-count').textContent = `${leads.length} leads`;
+  const tbody = document.getElementById('leads-table');
+  if (!leads.length) {
+    tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">◉</div><p>No leads yet</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = leads.map(l => {
+    const statusMap = {
+      new: 'badge-gray', ready: 'badge-blue', sent: 'badge-amber',
+      replied: 'badge-green', booked: 'badge-green'
+    };
+    return `
+    <tr>
+      <td><input type="checkbox" class="lead-checkbox" value="${l.id}"></td>
+      <td><strong>${l.first_name} ${l.last_name}</strong></td>
+      <td>${l.company}</td>
+      <td style="color:var(--muted);font-size:12px">${l.role}</td>
+      <td style="font-family:var(--mono);font-size:12px">${l.email}</td>
+      <td style="font-size:12px">${l.website ? `<a href="${l.website.startsWith('http')?l.website:'http://'+l.website}" target="_blank" style="color:var(--accent);text-decoration:none;">Link</a>` : '-'}</td>
+      <td style="font-size:12px">${l.linkedin ? `<a href="${l.linkedin.startsWith('http')?l.linkedin:'https://'+l.linkedin}" target="_blank" style="color:#0077b5;text-decoration:none;">Link</a>` : '-'}</td>
+      <td>
+        <select class="form-select" style="width:100px;padding:4px 8px;font-size:11px;" onchange="updateLeadStatus(${l.id}, this.value)">
+          ${['new','ready','sent','replied','booked'].map(s => `<option value="${s}" ${l.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td>${l.email_body ? `<button class="btn btn-ghost btn-sm" onclick="previewEmail('${escapeHtml(l.email_body || '')}')">Preview</button> <button class="btn btn-amber btn-sm" onclick="generateSingleEmail(${l.campaign_id}, ${l.id})">Regenerate</button> <button class="btn btn-green btn-sm" onclick="sendSingleEmail(${l.campaign_id}, ${l.id})">Send</button>` : `<button class="btn btn-amber btn-sm" onclick="generateSingleEmail(${l.campaign_id}, ${l.id})">Generate</button>`}</td>
+      <td><span class="badge ${statusMap[l.status] || 'badge-gray'}">${l.status}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function escapeHtml(str) {
+  return str.replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function previewEmail(content) {
+  document.getElementById('preview-content').textContent = content.replace(/\\n/g, '\n');
+  openModal('modal-preview');
+}
+
+async function updateLeadStatus(id, status) {
+  await fetch(`${API}/leads/${id}/status`, {
+    method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({status})
+  });
+  toast(`Status → ${status}`);
+}
+
+async function deleteAllLeads() {
+  const cid = document.getElementById('leads-campaign-filter').value;
+  const msg = cid ? 'Delete ALL leads in this campaign?' : 'Delete ALL leads across ALL campaigns?';
+  if (!confirm(msg)) return;
+  const url = cid ? `${API}/leads?campaign_id=${cid}` : `${API}/leads`;
+  await fetch(url, { method: 'DELETE' });
+  toast('Leads deleted');
+  loadLeads();
+  loadStats();
+}
+
+// ── UPLOAD CSV ──
+function openUploadModal() {
+  loadCampaignSelects();
+  document.getElementById('csv-file').addEventListener('change', function() {
+    document.getElementById('csv-filename').textContent = this.files[0]?.name || 'Choose CSV file...';
+  });
+  openModal('modal-upload');
+}
+
+async function uploadCSV() {
+  const cid = document.getElementById('upload-campaign-select').value;
+  const file = document.getElementById('csv-file').files[0];
+  if (!cid || !file) { toast('Select campaign and file', 'err'); return; }
+  const form = new FormData();
+  form.append('campaign_id', cid);
+  form.append('file', file);
+  const r = await fetch(`${API}/leads/upload`, {method: 'POST', body: form});
+  const d = await r.json();
+  closeModal('modal-upload');
+  toast(`Imported ${d.imported} leads!`);
+  loadLeads();
+}
+
+// ── SCRAPE ──
+function openScrapeModal() { loadCampaignSelects(); openModal('modal-scrape'); }
+
+async function scrapeLeads() {
+  const source = document.getElementById('scrape-source').value;
+  const cid = document.getElementById('scrape-campaign-select').value;
+  const domain = document.getElementById('scrape-domain').value.trim();
+  const key = document.getElementById('scrape-api-key').value.trim();
+  if (!cid || !domain || !key) { toast('Fill all fields', 'err'); return; }
+  const r = await fetch(`${API}/scrape-leads`, {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({campaign_id: cid, domain, api_key: key, source})
+  });
+  const d = await r.json();
+  closeModal('modal-scrape');
+  toast(`Found ${d.found} leads from ${domain}`);
+  loadLeads();
+}
+
+function updateScrapeLabels() {
+  const source = document.getElementById('scrape-source').value;
+  document.getElementById('scrape-key-label').textContent = source === 'apollo' ? 'Apollo.io API Key' : 'Hunter.io API Key';
+}
+
+// ── GENERATE ──
+function openGenerateModal() {
+  loadCampaignSelects();
+  openModal('modal-generate');
+}
+
+async function generateSingleEmail(cid, lid) {
+  const r = await fetch(`${API}/generate-emails`, {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ campaign_id: cid, lead_id: lid })
+  });
+  if (r.ok) {
+    toast(`Generating email for lead...`);
+    startAutoRefresh();
+    loadLeads();
+  } else {
+    toast('Error generating email', 'err');
+  }
+}
+
+async function generateEmails() {
+  const cid = document.getElementById('generate-campaign-select').value;
+  const mode = document.getElementById('generate-mode').value;
+  
+  if (!cid) { toast('Select a campaign', 'err'); return; }
+
+  if (mode === 'sent' || mode === 'all') {
+    if (!confirm('WARNING: You are about to regenerate emails that have already been sent. This will overwrite their email body and reset them to "ready" status. Are you sure you want to proceed?')) {
+      return;
+    }
+  }
+
+  const btn = document.getElementById('generate-btn');
+  btn.innerHTML = '<span class="loading"></span> Generating...';
+  btn.disabled = true;
+  
+  const r = await fetch(`${API}/generate-emails`, {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      campaign_id: cid, 
+      mode: mode
+    })
+  });
+  const d = await r.json();
+  btn.innerHTML = '⚡ Generate with Groq'; btn.disabled = false;
+  
+  if (r.ok) {
+    closeModal('modal-generate');
+    toast(`Started AI generation for ${d.queued} leads (${mode} mode)`);
+    startAutoRefresh(); // Start live view
+    loadLeads();
+  } else {
+    toast(d.error || 'Generation failed', 'err');
+  }
+}
+
+// ── SEND ──
+let selectedLeadIds = [];
+
+function toggleSelectAllLeads(el) {
+  const checkboxes = document.querySelectorAll('.lead-checkbox');
+  checkboxes.forEach(cb => cb.checked = el.checked);
+}
+
+function getSelectedLeads() {
+  const checkboxes = document.querySelectorAll('.lead-checkbox:checked');
+  return Array.from(checkboxes).map(cb => parseInt(cb.value));
+}
+
+function openSendModal() { 
+  selectedLeadIds = getSelectedLeads();
+  if (selectedLeadIds.length > 0) {
+    document.getElementById('send-target-text').textContent = `${selectedLeadIds.length} Selected Lead(s)`;
+    document.getElementById('send-target-text').style.display = 'block';
+    document.getElementById('send-campaign-wrapper').style.display = 'none';
+  } else {
+    document.getElementById('send-target-text').style.display = 'none';
+    document.getElementById('send-campaign-wrapper').style.display = 'block';
+    loadCampaignSelects(); 
+  }
+  openModal('modal-send'); 
+}
+
+async function sendEmails() {
+  let payload = {};
+  
+  const durVal = parseFloat(document.getElementById('send-duration-val').value) || 2;
+  const durUnit = document.getElementById('send-duration-unit').value;
+  const duration_seconds = durVal * (durUnit === 'hours' ? 3600 : 60);
+  
+  if (selectedLeadIds.length > 0) {
+    payload = { lead_ids: selectedLeadIds, duration_seconds };
+  } else {
+    const cid = document.getElementById('send-campaign-select').value;
+    if (!cid) { toast('Select a campaign', 'err'); return; }
+    payload = { campaign_id: cid, duration_seconds };
+  }
+  
+  const r = await fetch(`${API}/send-emails`, {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+  const d = await r.json();
+  closeModal('modal-send');
+  toast(`Queued emails — sending now`);
+  
+  // uncheck all
+  document.querySelectorAll('.lead-checkbox').forEach(cb => cb.checked = false);
+  const selectAll = document.getElementById('select-all-leads');
+  if(selectAll) selectAll.checked = false;
+}
+
+async function sendSingleEmail(cid, lid) {
+  const r = await fetch(`${API}/send-emails`, {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({campaign_id: cid, lead_id: lid, delay_seconds: 0})
+  });
+  if (r.ok) {
+    toast(`Sending email...`);
+    startAutoRefresh();
+  } else {
+    toast('Error sending email', 'err');
+  }
+}
+
+// ── PROMPTS ──
+async function loadPromptsPage() {
+  await loadCampaignSelects();
+  const sel = document.getElementById('prompts-campaign-select');
+  sel.innerHTML = '<option value="">Choose a campaign...</option>' + 
+    allCampaigns.map(c => `<option value="${c.id}">${c.name} (${c.client_name})</option>`).join('');
+  document.getElementById('prompt-editor-area').style.display = 'none';
+  document.getElementById('prompt-empty-state').style.display = 'block';
+}
+
+function loadCampaignPrompt() {
+  const cid = document.getElementById('prompts-campaign-select').value;
+  if (!cid) {
+    document.getElementById('prompt-editor-area').style.display = 'none';
+    document.getElementById('prompt-empty-state').style.display = 'block';
+    return;
+  }
+  
+  const camp = allCampaigns.find(c => c.id == cid);
+  if (camp) {
+    let prompt = camp.email_prompt;
+    if (!prompt) {
+      // Provide default template based on type
+      if (camp.campaign_type === 'internship') {
+        prompt = `You are a university student reaching out to a company for an internship. Write a highly personalized, concise cold email.
+
+Campaign context:
+- Target industry: {target_industry}
+- Target role/department: {target_role}
+- My skills / value I bring: {value_prop}
+
+Prospect info:
+- Name: {first_name} {last_name}
+- Company: {company}
+- Role: {role}
+- LinkedIn: {linkedin}
+- Website: {website}
+
+Rules:
+1. Subject line + body (max 120 words)
+2. First line must be hyper-personalized to THEM specifically
+3. Show passion for their specific company
+4. One clear CTA (e.g., a quick 10-min chat to learn about their work or potential opportunities)
+5. Sound like an eager, smart student, not a corporate sales rep. No buzzwords.
+
+Format your response EXACTLY as:
+SUBJECT: [subject line]
+BODY:
+[email body]`;
+      } else {
+        prompt = `You are an expert cold email copywriter. Write a highly personalized, concise cold email.
+
+Campaign context:
+- Target industry: {target_industry}
+- Target role: {target_role}
+- Value proposition: {value_prop}
+
+Prospect info:
+- Name: {first_name} {last_name}
+- Company: {company}
+- Role: {role}
+- LinkedIn: {linkedin}
+- Website: {website}
+
+Rules:
+1. Subject line + body (max 120 words)
+2. First line must be hyper-personalized to THEM specifically
+3. One clear CTA (15-min call)
+4. No fluff, no buzzwords
+5. Sound human, not like AI
+
+Format your response EXACTLY as:
+SUBJECT: [subject line]
+BODY:
+[email body]`;
+      }
+    }
+    document.getElementById('edit-prompt-template').value = prompt;
+    document.getElementById('prompt-editor-area').style.display = 'block';
+    document.getElementById('prompt-empty-state').style.display = 'none';
+  }
+}
+
+async function saveCampaignPrompt() {
+  const cid = document.getElementById('prompts-campaign-select').value;
+  const prompt = document.getElementById('edit-prompt-template').value;
+  if (!cid) return;
+  
+  const r = await fetch(`${API}/campaigns/${cid}/prompt`, {
+    method: 'PATCH',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({email_prompt: prompt})
+  });
+  
+  if (r.ok) {
+    toast('Prompt saved for this campaign!');
+    // Update local cache
+    const camp = allCampaigns.find(c => c.id == cid);
+    if (camp) camp.email_prompt = prompt;
+  } else {
+    toast('Failed to save prompt', 'err');
+  }
+}
+
+function resetPromptToDefault() {
+  if (!confirm('Reset this campaign to the default AI prompt template?')) return;
+  document.getElementById('prompts-campaign-select').value = document.getElementById('prompts-campaign-select').value; 
+  // Trigger reload without custom prompt
+  const cid = document.getElementById('prompts-campaign-select').value;
+  const camp = allCampaigns.find(c => c.id == cid);
+  if (camp) {
+    camp.email_prompt = null;
+    loadCampaignPrompt();
+  }
+}
+
+// ── SMTP ──
+async function loadSMTP() {
+  try {
+    const r = await fetch(`${API}/smtp`);
+    const d = await r.json();
+    if (d.host) {
+      document.getElementById('smtp-host').value = d.host;
+      document.getElementById('smtp-port').value = d.port;
+      document.getElementById('smtp-user').value = d.username;
+      document.getElementById('smtp-name').value = d.from_name || '';
+    }
+    const key = localStorage.getItem('outreach_api_key') || '';
+    document.getElementById('api-key-input').value = key;
+  } catch(e) {}
+}
+
+async function saveSMTP() {
+  const d = {
+    host: document.getElementById('smtp-host').value.trim(),
+    port: parseInt(document.getElementById('smtp-port').value),
+    username: document.getElementById('smtp-user').value.trim(),
+    password: document.getElementById('smtp-pass').value.trim(),
+    from_name: document.getElementById('smtp-name').value.trim()
+  };
+  if (!d.host || !d.username || !d.password) { toast('Fill all SMTP fields', 'err'); return; }
+  const r = await fetch(`${API}/smtp`, {
+    method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(d)
+  });
+  if (r.ok) toast('SMTP saved!');
+}
+
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  localStorage.setItem('outreach_api_key', key);
+  toast('OpenRouter API key saved locally');
+}
+
+// ── PROFESSIONAL PROFILE ──
+async function loadProfile() {
+  const r = await fetch(`${API}/user-context`);
+  const d = await r.json();
+  document.getElementById('profile-bio').value = d.bio || '';
+  document.getElementById('profile-projects').value = d.projects || '';
+}
+
+async function saveProfile() {
+  const d = {
+    bio: document.getElementById('profile-bio').value.trim(),
+    projects: document.getElementById('profile-projects').value.trim()
+  };
+  const r = await fetch(`${API}/user-context`, {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(d)
+  });
+  if (r.ok) toast('Profile saved & Cache refreshed!');
+}
+
+// ── RESUME ──
+function openResumeModal(cid) {
+  document.getElementById('resume-camp-id').value = cid;
+  document.getElementById('resume-file').addEventListener('change', function() {
+    document.getElementById('resume-filename').textContent = this.files[0]?.name || 'Choose PDF...';
+  });
+  openModal('modal-resume');
+}
+
+async function uploadResume() {
+  const cid = document.getElementById('resume-camp-id').value;
+  const file = document.getElementById('resume-file').files[0];
+  if (!file) return;
+  const form = new FormData();
+  form.append('file', file);
+  const r = await fetch(`${API}/campaigns/${cid}/resume`, {method: 'POST', body: form});
+  if (r.ok) {
+    closeModal('modal-resume');
+    toast('Resume attached to campaign!');
+    loadCampaigns();
+  }
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  loadStats();
+  loadProfile();
+});
+</script>
+</body>
+</html>
