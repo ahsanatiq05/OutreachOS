@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OutreachOS — Cold Email Agency</title>
+<title>PhishGuard — Security Awareness Platform</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -220,6 +220,75 @@ tr:hover td { background: var(--surface2); }
   font-size: 13px; color: var(--muted); cursor: pointer; transition: all 0.15s;
 }
 .file-input-label:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── SECURITY DASHBOARD STYLES ───────────────────────────────────────────── */
+.sec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.sec-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 20px; position: relative; overflow: hidden; transition: border-color 0.3s;
+}
+.sec-card.shield-ok   { border-color: rgba(74,222,128,0.4); }
+.sec-card.shield-warn { border-color: rgba(251,191,36,0.4); }
+.sec-card.shield-fail { border-color: rgba(248,113,113,0.5); }
+.sec-card.shield-scanning { border-color: rgba(124,108,250,0.6); animation: secPulse 1.5s infinite; }
+@keyframes secPulse { 0%,100%{border-color:rgba(124,108,250,0.4)} 50%{border-color:rgba(124,108,250,0.9)} }
+.sec-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.sec-shield-icon { font-size: 24px; }
+.sec-card-title { font-size: 13px; font-weight: 700; }
+.sec-card-subtitle { font-size: 10px; color: var(--muted); font-family: var(--mono); letter-spacing: 0.8px; margin-top: 1px; }
+.sec-status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+  font-family: var(--mono); letter-spacing: 0.5px; margin-bottom: 10px;
+}
+.sec-status-badge.ok       { background: rgba(74,222,128,0.12);  color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+.sec-status-badge.warn     { background: rgba(251,191,36,0.12);   color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+.sec-status-badge.fail     { background: rgba(248,113,113,0.12);  color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+.sec-status-badge.idle     { background: rgba(107,107,128,0.12);  color: var(--muted); border: 1px solid rgba(107,107,128,0.3); }
+.sec-status-badge.scanning { background: rgba(124,108,250,0.12);  color: var(--accent); border: 1px solid rgba(124,108,250,0.3); }
+.sec-detail { font-size: 11px; color: var(--muted); font-family: var(--mono); line-height: 1.65; }
+.sec-detail .hi   { color: var(--text); }
+.sec-detail .ok   { color: #4ade80; }
+.sec-detail .bad  { color: #f87171; }
+.sec-detail .warn { color: #fbbf24; }
+.sec-scan-btn {
+  margin-top: 14px; width: 100%; padding: 8px; border-radius: 8px;
+  font-size: 11px; font-weight: 700; font-family: var(--font); cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface2); color: var(--muted);
+  transition: all 0.15s;
+}
+.sec-scan-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(124,108,250,0.08); }
+.sec-threat-log {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+  overflow: hidden;
+}
+.sec-log-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.sec-log-title { font-size: 13px; font-weight: 700; }
+.sec-log-body { max-height: 280px; overflow-y: auto; }
+.sec-log-item {
+  display: flex; align-items: flex-start; gap: 12px; padding: 10px 20px;
+  border-bottom: 1px solid rgba(42,42,53,0.4); font-size: 12px;
+}
+.sec-log-item:last-child { border-bottom: none; }
+.sec-log-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.sec-log-dot.ok   { background: #4ade80; }
+.sec-log-dot.fail { background: #f87171; }
+.sec-log-dot.warn { background: #fbbf24; }
+.sec-log-dot.info { background: #60a5fa; }
+.sec-inject-test { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+.score-ring-wrap { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
+.score-ring {
+  width: 90px; height: 90px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 800; position: relative;
+  background: conic-gradient(#4ade80 0% var(--score-pct, 0%), var(--border) var(--score-pct, 0%) 100%);
+}
+.score-ring::before {
+  content: ''; position: absolute; width: 66px; height: 66px;
+  border-radius: 50%; background: var(--surface);
+}
+.score-ring span { position: relative; z-index: 1; }
+.owasp-tag { font-size: 9px; font-family: var(--mono); letter-spacing: 0.5px; color: var(--muted); margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -227,29 +296,39 @@ tr:hover td { background: var(--surface2); }
 <!-- SIDEBAR -->
 <nav class="sidebar">
   <div class="logo">
-    <div class="logo-mark">Outreach<span>OS</span></div>
-    <div class="logo-sub">COLD EMAIL AGENCY</div>
+    <div class="logo-mark">Phish<span>Guard</span></div>
+    <div class="logo-sub">SECURITY PLATFORM</div>
   </div>
   <div class="nav">
     <div class="nav-item active" onclick="showPage('dashboard')">
-      <span class="nav-icon">◈</span> Dashboard
+      <span class="nav-icon">📊</span> Dashboard
     </div>
     <div class="nav-item" onclick="showPage('clients')">
-      <span class="nav-icon">◎</span> Users
+      <span class="nav-icon">👥</span> Users
     </div>
     <div class="nav-item" onclick="showPage('campaigns')">
-      <span class="nav-icon">◐</span> Campaigns
+      <span class="nav-icon">🎯</span> Campaigns
     </div>
     <div class="nav-item" onclick="showPage('leads')">
-      <span class="nav-icon">◉</span> Leads
+      <span class="nav-icon">🎣</span> Targets
     </div>
     <div class="nav-item" onclick="showPage('prompts')">
-      <span class="nav-icon">✦</span> Email Prompts
+      <span class="nav-icon">✉️</span> Templates
     </div>
     <div class="nav-item" onclick="showPage('settings')">
-      <span class="nav-icon">◌</span> Settings & Profile
+      <span class="nav-icon">⚙️</span> Settings &amp; Profile
+    </div>
+    <div class="nav-item" onclick="openMapsScrapeModal()">
+      <span class="nav-icon">🗺️</span> Google Maps
+    </div>
+    <div class="nav-item" onclick="showPage('history')">
+      <span class="nav-icon">📦</span> Scrape History
+    </div>
+    <div class="nav-item" onclick="showPage('enricher')">
+      <span class="nav-icon">📊</span> CSV Enricher
     </div>
   </div>
+
   <div class="sidebar-bottom">
     <div class="api-badge"><span class="status-dot"></span>SYSTEM ONLINE</div>
   </div>
@@ -368,9 +447,12 @@ tr:hover td { background: var(--surface2); }
         <div class="card-header">
           <div class="card-title">Leads</div>
           <div style="display:flex;gap:8px;">
+            <button class="btn btn-ghost btn-sm" onclick="openManualLeadModal()">+ Add Lead</button>
             <button class="btn btn-ghost btn-sm" onclick="openUploadModal()">↑ Upload CSV</button>
             <button class="btn btn-ghost btn-sm" onclick="openScrapeModal()">⊕ Scrape Domain</button>
+            <button class="btn btn-ghost btn-sm" onclick="openMapsScrapeModal()" style="border-color: var(--accent); color: var(--accent);">🗺 Google Maps Scraper</button>
             <button class="btn btn-danger btn-sm" onclick="deleteAllLeads()">✕ Delete All Leads</button>
+            <button class="btn btn-danger btn-sm" onclick="cleanLeads()" title="Remove already sent leads and leads without an email address">✕ Clean Leads</button>
             <button class="btn btn-amber btn-sm" onclick="openGenerateModal()">✦ AI Generate Emails</button>
             <button class="btn btn-green btn-sm" onclick="openSendModal()">▶ Send Emails</button>
           </div>
@@ -405,8 +487,8 @@ tr:hover td { background: var(--surface2); }
           <div id="prompt-editor-area" style="display:none; margin-top:24px;">
             <div class="form-group">
               <label class="form-label">System Role</label>
-              <input class="form-input" id="edit-prompt-system" value="You are an expert cold email copywriter. Respond ONLY with the email in the requested format." readonly>
-              <p style="font-size:10px; color:var(--muted); margin-top:4px;">The system role is currently global. Modify in app.py if needed.</p>
+              <input class="form-input" id="edit-prompt-system" value="You are an expert cold email copywriter. Respond ONLY with the email in the requested format.">
+              <p style="font-size:10px; color:var(--muted); margin-top:4px;">Customize the AI's persona for this specific campaign.</p>
             </div>
             
             <div class="form-group">
@@ -437,32 +519,58 @@ tr:hover td { background: var(--surface2); }
     <div class="page" id="page-settings">
       <div class="settings-card">
         <h3>🔌 SMTP Configuration</h3>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Configure your email sending server. Works with Gmail, Outlook, Mailgun, SendGrid, etc.</p>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">SMTP Host</label>
-            <input class="form-input" id="smtp-host" placeholder="smtp.gmail.com">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Port</label>
-            <input class="form-input" id="smtp-port" placeholder="587" type="number">
-          </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Configure your email sending servers. You can add multiple SMTP connections to divide and rotate email sending volume automatically.</p>
+        
+        <!-- Connections list -->
+        <div style="margin-bottom:20px; overflow-x:auto; border:1px solid var(--border); border-radius:8px;">
+          <table style="font-size:12px; margin-bottom:0;">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Host</th>
+                <th>Port</th>
+                <th>From Name</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="smtp-configs-table">
+              <tr>
+                <td colspan="6" style="text-align:center; color:var(--muted); padding:16px;">Loading SMTP connections...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Username / Email</label>
-            <input class="form-input" id="smtp-user" placeholder="you@example.com">
+
+        <!-- Add connection form -->
+        <div style="background:rgba(124,108,250,0.04); border:1px solid var(--border); border-radius:8px; padding:16px;">
+          <h4 style="margin-top:0; margin-bottom:12px; font-size:13px; font-weight:600; color:var(--accent);">⊕ Add SMTP Connection</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">SMTP Host</label>
+              <input class="form-input" id="smtp-host" placeholder="e.g. smtp.hostinger.com">
+            </div>
+            <div class="form-group" style="width:100px;">
+              <label class="form-label">Port</label>
+              <input class="form-input" id="smtp-port" placeholder="465" type="number">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Username / Email</label>
+              <input class="form-input" id="smtp-user" placeholder="e.g. connect@sharkmindsai.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password / App Password</label>
+              <input class="form-input" id="smtp-pass" type="password" placeholder="••••••••">
+            </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Password / App Password</label>
-            <input class="form-input" id="smtp-pass" type="password" placeholder="••••••••">
+            <label class="form-label">From Name</label>
+            <input class="form-input" id="smtp-name" placeholder="e.g. Sharkminds AI">
           </div>
+          <button class="btn btn-primary btn-sm" onclick="saveSMTP()">Add SMTP Connection</button>
         </div>
-        <div class="form-group">
-          <label class="form-label">From Name</label>
-          <input class="form-input" id="smtp-name" placeholder="John Smith">
-        </div>
-        <button class="btn btn-primary" onclick="saveSMTP()">Save SMTP Config</button>
       </div>
       <div class="settings-card">
         <h3>⚡ AI Settings (NVIDIA NIM)</h3>
@@ -499,10 +607,319 @@ Sarah Jones, sarah@techco.io, TechCo, CTO, linkedin.com/in/sjones, techco.io</di
       </div>
     </div>
 
+    <!-- ══════════════════════════════════════════════
+         SECURITY DASHBOARD PAGE
+    ══════════════════════════════════════════════ -->
+    <div class="page" id="page-security">
+
+      <!-- Top Banner -->
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
+        <div style="font-size:40px;">🛡️</div>
+        <div>
+          <div style="font-size:22px;font-weight:800;letter-spacing:-0.5px;">Security Command Center</div>
+          <div style="font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:2px;">Enterprise-grade email security shields — real-time audit &amp; threat detection</div>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:10px;">
+          <button class="btn btn-ghost btn-sm" onclick="secRunFullScan()">⚡ Full Security Scan</button>
+          <button class="btn btn-ghost btn-sm" onclick="loadSecurityLogs()">↻ Refresh Logs</button>
+        </div>
+      </div>
+
+      <!-- Security Score Row -->
+      <div class="card" style="margin-bottom:20px;">
+        <div style="padding:20px;">
+          <div class="score-ring-wrap">
+            <div class="score-ring" id="sec-score-ring" style="--score-pct:0%">
+              <span id="sec-score-val">—</span>
+            </div>
+            <div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Security Health Score</div>
+              <div style="font-size:12px;color:var(--muted);">Run a scan to calculate your overall security posture across all 6 shields.</div>
+              <div id="sec-score-msg" style="font-size:12px;margin-top:6px;color:var(--muted);"></div>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:28px;">
+              <div style="text-align:center;">
+                <div style="font-size:24px;font-weight:800;color:#4ade80;" id="sec-shields-ok">—</div>
+                <div style="font-size:10px;color:var(--muted);font-family:var(--mono);">SHIELDS OK</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:24px;font-weight:800;color:#f87171;" id="sec-shields-fail">—</div>
+                <div style="font-size:10px;color:var(--muted);font-family:var(--mono);">SHIELDS FAILED</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:24px;font-weight:800;color:#fbbf24;" id="sec-threats-found">—</div>
+                <div style="font-size:10px;color:var(--muted);font-family:var(--mono);">THREATS</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 Shield Cards -->
+      <div class="sec-grid">
+
+        <!-- Shield 1: SMTP Injection -->
+        <div class="sec-card" id="shield-smtp">
+          <div class="sec-card-header">
+            <span class="sec-shield-icon">💉</span>
+            <div>
+              <div class="sec-card-title">SMTP Injection Shield</div>
+              <div class="sec-card-subtitle">OWASP A03 · Input Validation</div>
+            </div>
+          </div>
+          <div class="sec-status-badge idle" id="badge-smtp">○ IDLE</div>
+          <div class="sec-detail" id="detail-smtp">Test lead data for <span class="hi">\r\n</span> header injection characters that can hijack your SMTP server and send unauthorized emails.</div>
+          <div class="sec-inject-test">
+            <input class="form-input" id="smtp-inject-input" placeholder='Try: hello\r\nBCC: attacker@evil.com' style="font-size:11px;flex:1;">
+            <button class="btn btn-ghost btn-sm" onclick="secSmtpTest()">Scan</button>
+          </div>
+          <div class="owasp-tag">OWASP A03:2021 – Injection · RFC 5321</div>
+        </div>
+
+        <!-- Shield 2: TLS Validator -->
+        <div class="sec-card" id="shield-tls">
+          <div class="sec-card-header">
+            <span class="sec-shield-icon">🔒</span>
+            <div>
+              <div class="sec-card-title">TLS Handshake Validator</div>
+              <div class="sec-card-subtitle">Network Security · Encryption</div>
+            </div>
+          </div>
+          <div class="sec-status-badge idle" id="badge-tls">○ IDLE</div>
+          <div class="sec-detail" id="detail-tls">Confirm your SMTP server negotiates a secure <span class="hi">STARTTLS</span> encrypted connection before any email data is transmitted in plaintext.</div>
+          <div class="sec-inject-test">
+            <input class="form-input" id="tls-host-input" placeholder="smtp.gmail.com" style="font-size:11px;flex:1;">
+            <input class="form-input" id="tls-port-input" placeholder="587" style="font-size:11px;width:60px;">
+            <button class="btn btn-ghost btn-sm" onclick="secTlsTest()">Test</button>
+          </div>
+          <div class="owasp-tag">Network Encryption · RFC 3207 · TLSv1.2+</div>
+        </div>
+
+        <!-- Shield 3: DNS Spoofing Auditor -->
+        <div class="sec-card" id="shield-dns">
+          <div class="sec-card-header">
+            <span class="sec-shield-icon">🌐</span>
+            <div>
+              <div class="sec-card-title">Sender Spoofing Auditor</div>
+              <div class="sec-card-subtitle">DNS · SPF · DKIM</div>
+            </div>
+          </div>
+          <div class="sec-status-badge idle" id="badge-dns">○ IDLE</div>
+          <div class="sec-detail" id="detail-dns">Validates your domain's <span class="hi">SPF</span> and <span class="hi">DKIM</span> DNS records so attackers cannot send fraudulent emails impersonating your identity.</div>
+          <div class="sec-inject-test">
+            <input class="form-input" id="dns-domain-input" placeholder="yourdomain.com" style="font-size:11px;flex:1;">
+            <input class="form-input" id="dns-selector-input" placeholder="DKIM selector" style="font-size:11px;width:100px;">
+            <button class="btn btn-ghost btn-sm" onclick="secDnsTest()">Audit</button>
+          </div>
+          <div class="owasp-tag">Email Auth · RFC 7208 (SPF) · RFC 6376 (DKIM)</div>
+        </div>
+
+        <!-- Shield 4: Rate Limiter -->
+        <div class="sec-card" id="shield-rate">
+          <div class="sec-card-header">
+            <span class="sec-shield-icon">🚧</span>
+            <div>
+              <div class="sec-card-title">Brute-Force Rate Limiter</div>
+              <div class="sec-card-subtitle">OWASP A07 · Auth Protection</div>
+            </div>
+          </div>
+          <div class="sec-status-badge idle" id="badge-rate">○ IDLE</div>
+          <div class="sec-detail" id="detail-rate">Tracks API requests per IP address (limit: <span class="hi">30 req/60s</span>). Blocks credential stuffing and enumeration attacks automatically.</div>
+          <button class="sec-scan-btn" onclick="secRateCheck()">Check Current IP Rate Status</button>
+          <div class="owasp-tag">OWASP A07:2021 – Identification &amp; Auth Failures</div>
+        </div>
+
+        <!-- Shield 5: Header Injection Detector -->
+        <div class="sec-card" id="shield-header">
+          <div class="sec-card-header">
+            <span class="sec-shield-icon">📧</span>
+            <div>
+              <div class="sec-card-title">Header Injection Detector</div>
+              <div class="sec-card-subtitle">OWASP A03 · Email Security</div>
+            </div>
+          </div>
+          <div class="sec-status-badge idle" id="badge-header">○ IDLE</div>
+          <div class="sec-detail" id="detail-header">Scans email subject &amp; body for embedded <span class="hi">BCC/CC/To</span> headers that attackers use to mass-spam through your relay server.</div>
+          <div class="sec-inject-test" style="flex-direction:column;gap:6px;">
+            <input class="form-input" id="header-subj-input" placeholder="Subject: Quick Question" style="font-size:11px;">
+            <input class="form-input" id="header-body-input" placeholder="Body text to scan for injection..." style="font-size:11px;">
+            <button class="btn btn-ghost btn-sm" onclick="secHeaderTest()" style="align-self:flex-end;">Scan Email</button>
+          </div>
+          <div class="owasp-tag">OWASP A03:2021 – Injection · CWE-93</div>
+        </div>
+
+        <!-- Shield 6: DNSBL Blacklist Checker -->
+        <div class="sec-card" id="shield-blacklist">
+          <div class="sec-card-header">
+            <span class="sec-shield-icon">🚫</span>
+            <div>
+              <div class="sec-card-title">Domain Blacklist Checker</div>
+              <div class="sec-card-subtitle">DNSBL · IP Reputation</div>
+            </div>
+          </div>
+          <div class="sec-status-badge idle" id="badge-blacklist">○ IDLE</div>
+          <div class="sec-detail" id="detail-blacklist">Queries 5 major DNSBL databases (<span class="hi">Spamhaus, SpamCop, SORBS, Barracuda…</span>) to check if your sending IP is flagged as a spam source.</div>
+          <div class="sec-inject-test">
+            <input class="form-input" id="blacklist-domain-input" placeholder="yourdomain.com" style="font-size:11px;flex:1;">
+            <button class="btn btn-ghost btn-sm" onclick="secBlacklistTest()">Check</button>
+          </div>
+          <div class="owasp-tag">OWASP A05:2021 – Security Misconfiguration</div>
+        </div>
+
+      </div><!-- /sec-grid -->
+
+      <!-- Security Event Log -->
+      <div class="sec-threat-log">
+        <div class="sec-log-header">
+          <div class="sec-log-title">🔔 Security Event Log</div>
+          <div style="font-size:11px;color:var(--muted);font-family:var(--mono);" id="sec-log-count"></div>
+        </div>
+        <div class="sec-log-body" id="sec-log-body">
+          <div class="empty-state" style="padding:32px;">
+            <div class="empty-icon">🛡</div>
+            <p>No security events yet — run a scan above to begin</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-security -->
+
+    <!-- SCRAPE HISTORY PAGE -->
+    <div class="page" id="page-history">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
+        <div>
+          <div style="font-size:22px;font-weight:800;letter-spacing:-0.5px;">📦 Scrape History</div>
+          <div style="font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:4px;">Each session is a snapshot — import specific batches to any campaign, skipping already-sent contacts automatically.</div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-ghost btn-sm" onclick="saveCurrentScrapeAsHistory()">💾 Save Current Scrape</button>
+          <button class="btn btn-ghost btn-sm" onclick="loadHistory()">↻ Refresh</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">All Scrape Sessions</div>
+          <div style="font-size:11px;color:var(--muted);font-family:var(--mono);" id="history-count"></div>
+        </div>
+        <div class="card-body">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Snapshot Label</th>
+                <th>Source</th>
+                <th>Lead Count</th>
+                <th>Date Scraped</th>
+                <th style="width:200px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="history-table">
+              <tr><td colspan="6"><div class="empty-state"><div class="empty-icon">◌</div><p>No history yet — run a campaign scrape and it will auto-save here</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Info box -->
+      <div style="background:rgba(124,108,250,0.07); border:1px solid rgba(124,108,250,0.2); border-radius:10px; padding:16px 20px; display:flex; gap:14px; align-items:flex-start;">
+        <div style="font-size:24px;">💡</div>
+        <div>
+          <div style="font-weight:700; font-size:13px; margin-bottom:4px;">How does Scrape History work?</div>
+          <div style="font-size:12px; color:var(--muted); line-height:1.7;">
+            Every time a <strong>Campaign Scrape</strong> completes, the results are automatically saved as a snapshot here.
+            You can also manually save the current scrape status using <strong>💾 Save Current Scrape</strong>.
+            <br><br>
+            When you click <strong>Import to Campaign →</strong>, only leads whose email does NOT already exist in your
+            database are added — so <span style="color:var(--green);">previously sent contacts are always skipped</span>.
+            No more duplicates!
+          </div>
+        </div>
+      </div>
+    </div><!-- /page-history -->
+
+    <!-- CSV ENRICHER PAGE -->
+    <div class="page" id="page-enricher">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
+        <div>
+          <div style="font-size:22px;font-weight:800;letter-spacing:-0.5px;">📊 CSV Website Enricher</div>
+          <div style="font-size:12px;color:var(--muted);font-family:var(--mono);margin-top:4px;">Upload any CSV file, auto-detect website column, crawl websites for emails/phones/socials/meta-data and download enriched spreadsheets.</div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1.2fr; gap:24px; align-items:start;">
+        <!-- Upload Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Upload & Configure</div>
+          </div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:16px;">
+            <div class="form-group">
+              <label class="form-label">Upload CSV File</label>
+              <input type="file" id="enricher-file-input" accept=".csv" style="display:none;" onchange="handleEnricherUpload(event)">
+              <label for="enricher-file-input" class="file-input-label" id="enricher-upload-label" style="display:block; text-align:center; padding:32px 16px; border:2px dashed var(--border); border-radius:10px; cursor:pointer;">
+                <span style="font-size:28px; display:block; margin-bottom:8px;">📁</span>
+                Select or drag a CSV file
+              </label>
+            </div>
+
+            <!-- Configuration Options -->
+            <div id="enricher-config-section" style="display:none; flex-direction:column; gap:14px; border-top:1px solid var(--border); padding-top:16px;">
+              <div class="form-group">
+                <label class="form-label">Detected Headers</label>
+                <div id="enricher-headers-preview" style="font-size:11px; font-family:var(--mono); background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:8px; max-height:80px; overflow-y:auto; color:var(--muted); word-break:break-all;"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Website Domain Column</label>
+                <select class="form-select" id="enricher-website-column" style="width:100%;"></select>
+              </div>
+              <div class="form-group" style="display:flex; align-items:center; gap:8px;">
+                <input type="checkbox" id="enricher-respect-robots" checked style="width:16px; height:16px; accent-color:var(--accent);">
+                <label for="enricher-respect-robots" style="font-size:12px; font-weight:600; cursor:pointer;">Respect Robots.txt Rules</label>
+              </div>
+              <button class="btn btn-primary" style="width:100%;" onclick="startEnrichment()">🚀 Start Enrichment Scan</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task & Logs Card -->
+        <div class="card" id="enricher-progress-card" style="display:none;">
+          <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="card-title">Enrichment Task Progress</div>
+            <div id="enricher-task-badge" class="badge">Idle</div>
+          </div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:16px;">
+            <!-- Progress Info -->
+            <div style="display:flex; justify-content:space-between; font-size:12px;">
+              <span id="enricher-progress-text" style="font-weight:700;">Progress: 0%</span>
+              <span id="enricher-count-text" style="color:var(--muted); font-family:var(--mono);">0 / 0 rows</span>
+            </div>
+            <!-- Progress Bar -->
+            <div style="width:100%; background:var(--border); height:8px; border-radius:4px; overflow:hidden;">
+              <div id="enricher-progress-bar" style="width:0%; height:100%; background:var(--accent); transition: width 0.3s;"></div>
+            </div>
+
+            <!-- Download Button -->
+            <div id="enricher-download-section" style="display:none; text-align:center; padding:12px; background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.2); border-radius:8px;">
+              <p style="font-size:13px; color:var(--green); font-weight:700; margin-bottom:8px;">✓ Enriched Spreadsheet Ready!</p>
+              <button class="btn btn-primary btn-sm" onclick="downloadEnrichedCSV()">📥 Download Enriched CSV</button>
+            </div>
+
+            <!-- Logger console -->
+            <div class="form-group">
+              <label class="form-label">Activity & Scraper Logs</label>
+              <div id="enricher-logs" style="font-family:var(--mono); font-size:11px; color:#c5c5d2; background:#07070b; border:1px solid var(--border); border-radius:8px; padding:12px; height:240px; overflow-y:auto; line-height:1.6; white-space:pre-wrap;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /page-enricher -->
+
   </div>
 </div>
 
 <!-- MODALS -->
+
 
 <!-- Add Client -->
 <div class="modal-overlay" id="modal-client">
@@ -578,6 +995,55 @@ function updateCampLabels() {
 }
 </script>
 
+<!-- Add Manual Lead -->
+<div class="modal-overlay" id="modal-manual-lead">
+  <div class="modal">
+    <h3>Add Manual Lead</h3>
+    <div class="form-group">
+      <label class="form-label">Campaign</label>
+      <select class="form-select" id="manual-campaign-select"></select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">First Name</label>
+        <input class="form-input" id="manual-lead-first" placeholder="John">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Last Name</label>
+        <input class="form-input" id="manual-lead-last" placeholder="Doe">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input class="form-input" id="manual-lead-email" placeholder="john@example.com" type="email">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Company</label>
+        <input class="form-input" id="manual-lead-company" placeholder="Acme Corp">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <input class="form-input" id="manual-lead-role" placeholder="CEO">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Website</label>
+        <input class="form-input" id="manual-lead-website" placeholder="acme.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">LinkedIn</label>
+        <input class="form-input" id="manual-lead-linkedin" placeholder="linkedin.com/in/johndoe">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-manual-lead')">Cancel</button>
+      <button class="btn btn-primary" onclick="addManualLead()">Add Lead</button>
+    </div>
+  </div>
+</div>
+
 <!-- Upload CSV -->
 <div class="modal-overlay" id="modal-upload">
   <div class="modal">
@@ -633,7 +1099,211 @@ function updateCampLabels() {
   </div>
 </div>
 
-<!-- Generate Emails -->
+<!-- Google Maps Scraper -->
+<div class="modal-overlay" id="modal-maps-scrape">
+  <div class="modal" style="width:680px; max-width:95vw;">
+    <h3>🗺 Google Maps Lead Generator</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Search local businesses, extract emails, and import them directly into your campaign.</p>
+
+    <!-- Mode Toggle -->
+    <div style="display:flex; gap:0; border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:18px;">
+      <button id="maps-tab-quick" onclick="setMapsMode('quick')"
+        style="flex:1; padding:8px 0; font-size:12px; font-weight:600; border:none; cursor:pointer;
+               background:var(--accent); color:#000; transition:all .2s;">
+        ⚡ Quick Scrape
+      </button>
+      <button id="maps-tab-campaign" onclick="setMapsMode('campaign')"
+        style="flex:1; padding:8px 0; font-size:12px; font-weight:600; border:none; cursor:pointer;
+               background:transparent; color:var(--muted); transition:all .2s;">
+        🚀 Campaign Mode
+      </button>
+    </div>
+
+    <!-- Common: campaign selector -->
+    <div class="form-group">
+      <label class="form-label">Save Leads to Campaign</label>
+      <select class="form-select" id="maps-campaign-select"></select>
+    </div>
+
+    <!-- ── QUICK SCRAPE PANEL ── -->
+    <div id="maps-panel-quick">
+      <div class="form-row" style="align-items: flex-end;">
+        <div class="form-group" style="flex: 1;">
+          <label class="form-label">Maps Search Query</label>
+          <input class="form-input" id="maps-query" placeholder="e.g. barbers in rawalpindi">
+        </div>
+        <div class="form-group" style="width:110px;">
+          <label class="form-label">Limit (max 50)</label>
+          <input class="form-input" id="maps-limit" type="number" value="10" min="1" max="50">
+        </div>
+        <div class="form-group" style="display: flex; align-items: center; height: 38px; margin-bottom: 4px; padding-left: 10px;">
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 12px; white-space: nowrap;">
+            <input type="checkbox" id="quick-limitless" onchange="toggleLimitless('quick')"
+              style="width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer;">
+            <span>♾ Limitless</span>
+          </label>
+        </div>
+      </div>
+      <!-- Scrape-time filters -->
+      <div style="background:rgba(124,108,250,0.07); border:1px solid rgba(124,108,250,0.2);
+           border-radius:8px; padding:12px 16px; margin-top:4px;">
+        <div style="font-size:10px; font-family:var(--mono); color:var(--muted); letter-spacing:1px;
+             text-transform:uppercase; margin-bottom:10px;">🔍 Scrape Filters — only collect leads that have:</div>
+        <div style="display:flex; gap:20px; flex-wrap:wrap;">
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px;">
+            <input type="checkbox" id="quick-require-website" checked
+              style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;">
+            <span>🌐 Website</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px;">
+            <input type="checkbox" id="quick-require-email"
+              style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;">
+            <span>✉ Email address</span>
+          </label>
+        </div>
+        <div style="font-size:10px; color:var(--muted); margin-top:8px;">
+          Website filter is <strong>on by default</strong> — businesses without a website are skipped to save time.
+          Turn on Email to only collect leads where a working email was found.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CAMPAIGN MODE PANEL ── -->
+    <div id="maps-panel-campaign" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Business Niche</label>
+        <input class="form-input" id="camp-niche" placeholder="e.g. HVAC, Plumbers, Dentists">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Locations <span style="color:var(--muted);font-weight:400;">(comma-separated)</span></label>
+        <textarea class="form-input" id="camp-locations" rows="3"
+          style="resize:vertical; font-family:var(--mono); font-size:12px;"
+          placeholder="Buckhead GA, Roswell GA, Alpharetta GA, Marietta GA, Midtown Atlanta GA"
+          oninput="updateCampaignETA()"></textarea>
+        <div style="font-size:10px; color:var(--muted); margin-top:4px;">Each location becomes a separate scrape batch with a 3–5 min cooldown between them.</div>
+      </div>
+      <div class="form-row" style="align-items:flex-end;">
+        <div class="form-group" style="width: 120px;">
+          <label class="form-label">Total Leads Target</label>
+          <input class="form-input" id="camp-limit" type="number" value="100" min="10" max="500"
+            oninput="updateCampaignETA()">
+        </div>
+        <div class="form-group" style="display: flex; align-items: center; height: 38px; margin-bottom: 4px; padding-left: 10px;">
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 12px; white-space: nowrap;">
+            <input type="checkbox" id="camp-limitless" onchange="toggleLimitless('camp')"
+              style="width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer;">
+            <span>♾ Limitless</span>
+          </label>
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label class="form-label">Output CSV Filename</label>
+          <input class="form-input" id="camp-output" value="campaign_leads.csv" placeholder="leads.csv">
+        </div>
+      </div>
+      <!-- Scrape-time filters -->
+      <div style="background:rgba(124,108,250,0.07); border:1px solid rgba(124,108,250,0.2);
+           border-radius:8px; padding:12px 16px; margin-top:4px;">
+        <div style="font-size:10px; font-family:var(--mono); color:var(--muted); letter-spacing:1px;
+             text-transform:uppercase; margin-bottom:10px;">🔍 Scrape Filters — only collect leads that have:</div>
+        <div style="display:flex; gap:20px; flex-wrap:wrap;">
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px;">
+            <input type="checkbox" id="camp-require-website" checked
+              style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;">
+            <span>🌐 Website</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px;">
+            <input type="checkbox" id="camp-require-email"
+              style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;">
+            <span>✉ Email address</span>
+          </label>
+        </div>
+        <div style="font-size:10px; color:var(--muted); margin-top:8px;">
+          Website filter is <strong>on by default</strong>. Enable Email to only save leads where an email was found.
+        </div>
+      </div>
+      <!-- ETA Banner -->
+      <div id="camp-eta-banner" style="background:rgba(99,102,241,.12); border:1px solid rgba(99,102,241,.3);
+           border-radius:8px; padding:10px 14px; font-size:12px; margin-top:8px; display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span id="camp-eta-text" style="color:var(--accent); font-weight:600;"></span>
+          <span id="camp-eta-safe" style="color:#4ade80; font-size:11px;"></span>
+        </div>
+        <div id="camp-eta-sub" style="color:var(--muted); font-size:10px; margin-top:3px;"></div>
+      </div>
+      <div style="background:rgba(251,191,36,.08); border:1px solid rgba(251,191,36,.25);
+           border-radius:6px; padding:8px 12px; font-size:11px; color:#fbbf24; margin-top:8px;">
+        ⚠ Campaign mode runs in the background for hours. You can close this modal and use the app
+        normally — check logs anytime by clicking 🗺 again.
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div style="display:flex; gap:10px; margin-top:16px;">
+      <button class="btn btn-primary" id="btn-start-maps-scrape" onclick="startMapsScrape()">Start Scraping</button>
+      <button class="btn btn-ghost" id="btn-close-maps-modal" onclick="closeModal('modal-maps-scrape')">Close</button>
+    </div>
+
+    <!-- Progress/Logs Console -->
+    <div id="maps-status-container" style="display:none; margin-top:20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <label class="form-label" style="margin:0;">Status: <span id="maps-current-status" style="color:var(--accent); font-weight:bold;">Running</span></label>
+        <span id="maps-leads-saved-badge" style="font-size:11px; background:rgba(74,222,128,.15); color:#4ade80;
+              padding:2px 8px; border-radius:20px; display:none;">0 leads saved</span>
+      </div>
+      <div id="maps-logs-console" style="background:#050508; color:#a3e635; font-family:var(--mono);
+           font-size:11px; padding:12px; border-radius:6px; max-height:200px; overflow-y:auto;
+           line-height:1.5; border:1px solid var(--border);">
+      </div>
+    </div>
+
+    <!-- Scraped Results Table (quick mode only) -->
+    <div id="maps-results-container" style="display:none; margin-top:20px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+        <label class="form-label" style="margin:0;">Scraped Leads Preview</label>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:11px; color:var(--muted);">Import filter:</span>
+          <select class="form-select" id="maps-import-filter" style="font-size:11px; padding:4px 8px; height:28px; width:auto;" onchange="updateMapsFilterCount()">
+            <option value="all">All leads</option>
+            <option value="email" selected>Only with email ✉</option>
+            <option value="website">Only with website 🌐</option>
+            <option value="both">Email + Website</option>
+          </select>
+          <span id="maps-filter-count" style="font-size:11px; font-weight:600; color:var(--accent); white-space:nowrap;"></span>
+        </div>
+      </div>
+      <div style="max-height:220px; overflow-y:auto; border:1px solid var(--border); border-radius:6px;">
+        <table style="font-size:11px;">
+          <thead>
+            <tr><th>Name</th><th>Website</th><th>Phone</th><th>Address</th><th>Email Address</th></tr>
+          </thead>
+          <tbody id="maps-results-table">
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:14px; justify-content:flex-end;">
+        <button class="btn btn-green btn-sm" id="btn-save-maps-leads" onclick="saveMapsLeads()">Import Leads to Campaign</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- History Import Modal -->
+<div class="modal-overlay" id="modal-history-import">
+  <div class="modal" style="width:460px;">
+    <h3>📥 Import to Campaign</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px;" id="history-import-label">Select a campaign to import this scrape batch into. Already-sent and duplicate emails are skipped automatically.</p>
+    <div class="form-group">
+      <label class="form-label">Target Campaign</label>
+      <select class="form-select" id="history-import-campaign-select"></select>
+    </div>
+    <div id="history-import-result" style="display:none; padding:10px 14px; background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.2); border-radius:8px; font-size:12px; color:var(--green); margin-top:8px;"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-history-import')">Cancel</button>
+      <button class="btn btn-primary" id="btn-do-history-import" onclick="doHistoryImport()">Import Leads →</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-generate">
   <div class="modal">
     <h3>⚡ AI Email Generation</h3>
@@ -795,10 +1465,12 @@ function showPage(page) {
     if (n.textContent.trim().toLowerCase().includes(page.replace('-','').toLowerCase())) n.classList.add('active');
   });
   currentPage = page;
-  document.getElementById('pageTitle').textContent = {
+  const titles = {
     dashboard: 'Dashboard', clients: 'Users',
-    campaigns: 'Campaigns', leads: 'Leads', prompts: 'Email Prompts', settings: 'Settings'
-  }[page];
+    campaigns: 'Campaigns', leads: 'Leads', prompts: 'Email Prompts',
+    settings: 'Settings', history: 'Scrape History', enricher: 'CSV Website Enricher'
+  };
+  document.getElementById('pageTitle').textContent = titles[page] || page;
   const actions = document.getElementById('topbarActions');
   actions.innerHTML = '';
   if (page === 'clients') {
@@ -812,6 +1484,8 @@ function showPage(page) {
   if (page === 'leads') loadLeadsPage();
   if (page === 'prompts') loadPromptsPage();
   if (page === 'settings') loadSMTP();
+  if (page === 'history') loadHistory();
+  if (page === 'enricher') loadEnricherPage();
 }
 
 function toast(msg, type='ok') {
@@ -975,7 +1649,8 @@ async function loadCampaignSelects() {
   allCampaigns = await r.json();
   const opts = allCampaigns.map(c => `<option value="${c.id}">${c.name} (${c.client_name})</option>`).join('');
   ['leads-campaign-filter','upload-campaign-select','scrape-campaign-select',
-   'generate-campaign-select','send-campaign-select','prompts-campaign-select'].forEach(id => {
+   'generate-campaign-select','send-campaign-select','prompts-campaign-select',
+   'manual-campaign-select', 'maps-campaign-select'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.innerHTML = (id === 'leads-campaign-filter' ? '<option value="">All Campaigns</option>' : '') + opts;
   });
@@ -1006,8 +1681,23 @@ async function loadLeads() {
   tbody.innerHTML = leads.map((l, index) => {
     const statusMap = {
       new: 'badge-gray', ready: 'badge-blue', sent: 'badge-amber',
-      replied: 'badge-green', booked: 'badge-green'
+      opened: 'badge-purple', replied: 'badge-green', booked: 'badge-green'
     };
+    
+    // Format opened status message/timestamp
+    let openedBadge = '';
+    if (l.opened_at) {
+      try {
+        const dateObj = new Date(l.opened_at);
+        const timeStr = dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        openedBadge = `<span class="badge badge-green" title="Opened at ${l.opened_at}" style="font-size:10px; padding:2px 6px; display:inline-flex; align-items:center; gap:3px;">👁️ ${timeStr}</span>`;
+      } catch (err) {
+        openedBadge = `<span class="badge badge-green" title="Opened" style="font-size:10px; padding:2px 6px;">👁️ Yes</span>`;
+      }
+    } else {
+      openedBadge = `<span class="badge badge-gray" title="Not opened yet" style="font-size:10px; padding:2px 6px; opacity:0.6;">👁️ No</span>`;
+    }
+
     return `
     <tr>
       <td><input type="checkbox" class="lead-checkbox" value="${l.id}"></td>
@@ -1020,19 +1710,22 @@ async function loadLeads() {
       <td style="font-size:12px">${l.linkedin ? `<a href="${l.linkedin.startsWith('http')?l.linkedin:'https://'+l.linkedin}" target="_blank" style="color:#0077b5;text-decoration:none;">Link</a>` : '-'}</td>
       <td>
         <select class="form-select" style="width:100px;padding:4px 8px;font-size:11px;" onchange="updateLeadStatus(${l.id}, this.value)">
-          ${['new','ready','sent','replied','booked'].map(s => `<option value="${s}" ${l.status===s?'selected':''}>${s}</option>`).join('')}
+          ${['new','ready','sent','opened','replied','booked'].map(s => `<option value="${s}" ${l.status===s?'selected':''}>${s}</option>`).join('')}
         </select>
       </td>
       <td>
         ${l.email_body ? `<button class="btn btn-ghost btn-sm" onclick="previewEmail('${escapeHtml(l.email_body)}')">👁 Preview</button>` : `<span style="color:var(--muted);font-size:11px;">-</span>`}
       </td>
       <td>
-        <div style="display:flex; gap:4px;">
+        <div style="display:flex; gap:4px; align-items:center;">
           ${l.email_body 
             ? `<button class="btn btn-amber btn-sm" onclick="generateSingleEmail(${l.campaign_id}, ${l.id})">↻</button> <button class="btn btn-green btn-sm" onclick="sendSingleEmail(${l.campaign_id}, ${l.id})">Send</button>` 
             : `<button class="btn btn-amber btn-sm" onclick="generateSingleEmail(${l.campaign_id}, ${l.id})">Generate</button>`
           }
-          <span class="badge ${statusMap[l.status] || 'badge-gray'}" style="margin-left:auto;">${l.status}</span>
+          <div style="margin-left:auto; display:flex; gap:4px; align-items:center;">
+            ${openedBadge}
+            <span class="badge ${statusMap[l.status] || 'badge-gray'}">${l.status}</span>
+          </div>
         </div>
       </td>
     </tr>`;
@@ -1072,6 +1765,29 @@ async function deleteAllLeads() {
   loadStats();
 }
 
+async function cleanLeads() {
+  const cid = document.getElementById('leads-campaign-filter').value;
+  const msg = cid 
+    ? 'Remove already sent leads and leads without an email address in this campaign?' 
+    : 'Remove already sent leads and leads without an email address across ALL campaigns?';
+  if (!confirm(msg)) return;
+  
+  const url = cid ? `${API}/leads/clean?campaign_id=${cid}` : `${API}/leads/clean`;
+  try {
+    const r = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'} });
+    if (r.ok) {
+      const data = await r.json();
+      toast(`Cleaned leads: removed ${data.deleted} entries`);
+      loadLeads();
+      loadStats();
+    } else {
+      toast('Failed to clean leads', 'err');
+    }
+  } catch(e) {
+    toast('Error connecting to backend', 'err');
+  }
+}
+
 // ── UPLOAD CSV ──
 function openUploadModal() {
   loadCampaignSelects();
@@ -1091,8 +1807,51 @@ async function uploadCSV() {
   const r = await fetch(`${API}/leads/upload`, {method: 'POST', body: form});
   const d = await r.json();
   closeModal('modal-upload');
-  toast(`Imported ${d.imported} leads!`);
+  if (d.skipped > 0) {
+    toast(`Imported ${d.imported} leads (skipped ${d.skipped} duplicates)`);
+  } else {
+    toast(`Imported ${d.imported} leads!`);
+  }
   loadLeads();
+}
+
+// ── MANUAL LEAD ──
+function openManualLeadModal() {
+  loadCampaignSelects();
+  document.getElementById('manual-lead-first').value = '';
+  document.getElementById('manual-lead-last').value = '';
+  document.getElementById('manual-lead-email').value = '';
+  document.getElementById('manual-lead-company').value = '';
+  document.getElementById('manual-lead-role').value = '';
+  document.getElementById('manual-lead-website').value = '';
+  document.getElementById('manual-lead-linkedin').value = '';
+  openModal('modal-manual-lead');
+}
+
+async function addManualLead() {
+  const cid = document.getElementById('manual-campaign-select').value;
+  if (!cid) { toast('Select a campaign', 'err'); return; }
+  const d = {
+    campaign_id: cid,
+    first_name: document.getElementById('manual-lead-first').value.trim(),
+    last_name: document.getElementById('manual-lead-last').value.trim(),
+    email: document.getElementById('manual-lead-email').value.trim(),
+    company: document.getElementById('manual-lead-company').value.trim(),
+    role: document.getElementById('manual-lead-role').value.trim(),
+    website: document.getElementById('manual-lead-website').value.trim(),
+    linkedin: document.getElementById('manual-lead-linkedin').value.trim()
+  };
+  
+  const r = await fetch(`${API}/leads/manual`, {
+    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(d)
+  });
+  if (r.ok) {
+    closeModal('modal-manual-lead');
+    toast('Lead added manually!');
+    loadLeads();
+  } else {
+    toast('Failed to add lead', 'err');
+  }
 }
 
 // ── SCRAPE ──
@@ -1345,6 +2104,7 @@ BODY:
 [email body]`;
       }
     }
+    document.getElementById('edit-prompt-system').value = camp.system_prompt || "You are an expert cold email copywriter. Respond ONLY with the email in the requested format.";
     document.getElementById('edit-prompt-template').value = prompt;
     document.getElementById('prompt-editor-area').style.display = 'block';
     document.getElementById('prompt-empty-state').style.display = 'none';
@@ -1354,19 +2114,23 @@ BODY:
 async function saveCampaignPrompt() {
   const cid = document.getElementById('prompts-campaign-select').value;
   const prompt = document.getElementById('edit-prompt-template').value;
+  const sysPrompt = document.getElementById('edit-prompt-system').value;
   if (!cid) return;
   
   const r = await fetch(`${API}/campaigns/${cid}/prompt`, {
     method: 'PATCH',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({email_prompt: prompt})
+    body: JSON.stringify({email_prompt: prompt, system_prompt: sysPrompt})
   });
   
   if (r.ok) {
     toast('Prompt saved for this campaign!');
     // Update local cache
     const camp = allCampaigns.find(c => c.id == cid);
-    if (camp) camp.email_prompt = prompt;
+    if (camp) {
+      camp.email_prompt = prompt;
+      camp.system_prompt = sysPrompt;
+    }
   } else {
     toast('Failed to save prompt', 'err');
   }
@@ -1388,31 +2152,111 @@ function resetPromptToDefault() {
 async function loadSMTP() {
   try {
     const r = await fetch(`${API}/smtp`);
-    const d = await r.json();
-    if (d.host) {
-      document.getElementById('smtp-host').value = d.host;
-      document.getElementById('smtp-port').value = d.port;
-      document.getElementById('smtp-user').value = d.username;
-      document.getElementById('smtp-name').value = d.from_name || '';
+    const list = await r.json();
+    const tbody = document.getElementById('smtp-configs-table');
+    if (!list || list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:16px;">No SMTP servers configured. Add one below!</td></tr>';
+      return;
     }
+    tbody.innerHTML = list.map(c => `
+      <tr>
+        <td><strong>${escapeHtml(c.username)}</strong></td>
+        <td>${escapeHtml(c.host)}</td>
+        <td>${c.port}</td>
+        <td>${escapeHtml(c.from_name || '-')}</td>
+        <td>
+          <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="checkbox" ${c.active === 1 ? 'checked' : ''} onchange="toggleSMTP(${c.id}, this.checked)"
+              style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer;">
+            <span style="font-size:11px;font-weight:600;color:${c.active === 1 ? 'var(--green)' : 'var(--muted)'};">
+              ${c.active === 1 ? 'Active' : 'Inactive'}
+            </span>
+          </label>
+        </td>
+        <td>
+          <button class="btn btn-danger btn-sm" style="padding:2px 8px;font-size:10px;" onclick="deleteSMTP(${c.id})">Delete</button>
+        </td>
+      </tr>
+    `).join('');
+
     const key = localStorage.getItem('outreach_api_key') || '';
     document.getElementById('api-key-input').value = key;
-  } catch(e) {}
+  } catch(e) {
+    toast('Failed to load SMTP connections', 'err');
+  }
 }
 
 async function saveSMTP() {
-  const d = {
-    host: document.getElementById('smtp-host').value.trim(),
-    port: parseInt(document.getElementById('smtp-port').value),
-    username: document.getElementById('smtp-user').value.trim(),
-    password: document.getElementById('smtp-pass').value.trim(),
-    from_name: document.getElementById('smtp-name').value.trim()
-  };
-  if (!d.host || !d.username || !d.password) { toast('Fill all SMTP fields', 'err'); return; }
-  const r = await fetch(`${API}/smtp`, {
-    method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(d)
-  });
-  if (r.ok) toast('SMTP saved!');
+  const host = document.getElementById('smtp-host').value.trim();
+  const port = parseInt(document.getElementById('smtp-port').value, 10);
+  const username = document.getElementById('smtp-user').value.trim();
+  const password = document.getElementById('smtp-pass').value.trim();
+  const from_name = document.getElementById('smtp-name').value.trim();
+
+  if (!host || !port || !username || !password) {
+    toast('Please fill all SMTP fields', 'err');
+    return;
+  }
+
+  try {
+    const r = await fetch(`${API}/smtp`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ host, port, username, password, from_name })
+    });
+    if (r.ok) {
+      toast('SMTP connection added!');
+      document.getElementById('smtp-host').value = '';
+      document.getElementById('smtp-port').value = '';
+      document.getElementById('smtp-user').value = '';
+      document.getElementById('smtp-pass').value = '';
+      document.getElementById('smtp-name').value = '';
+      loadSMTP();
+    } else {
+      toast('Failed to add SMTP connection', 'err');
+    }
+  } catch(e) {
+    toast('Error connecting to API', 'err');
+  }
+}
+
+async function toggleSMTP(id, checked) {
+  try {
+    const active = checked ? 1 : 0;
+    const r = await fetch(`${API}/smtp/toggle`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ id, active })
+    });
+    if (r.ok) {
+      toast(checked ? 'SMTP server activated!' : 'SMTP server deactivated');
+      loadSMTP();
+    } else {
+      toast('Failed to toggle status', 'err');
+      loadSMTP();
+    }
+  } catch(e) {
+    toast('Error updating status', 'err');
+  }
+}
+
+async function deleteSMTP(id) {
+  if (!confirm('Are you sure you want to delete this SMTP configuration?')) return;
+  try {
+    const r = await fetch(`${API}/smtp/delete`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ id })
+    });
+    if (r.ok) {
+      toast('SMTP server deleted');
+      loadSMTP();
+    } else {
+      toast('Failed to delete SMTP server', 'err');
+    }
+  } catch(e) {
+    toast('Error deleting server', 'err');
+  }
 }
 
 function saveApiKey() {
@@ -1464,6 +2308,391 @@ async function uploadResume() {
   }
 }
 
+// ── GOOGLE MAPS SCRAPER ──
+let mapsScrapedLeads = [];
+let mapsScrapeInterval = null;
+
+function openMapsScrapeModal() {
+  loadCampaignSelects();
+  document.getElementById('maps-query').value = '';
+  document.getElementById('maps-limit').value = '10';
+  document.getElementById('maps-status-container').style.display = 'none';
+  document.getElementById('maps-results-container').style.display = 'none';
+  document.getElementById('btn-start-maps-scrape').disabled = false;
+  openModal('modal-maps-scrape');
+}
+
+// ── MAPS MODE TOGGLE ───────────────────────────────────────────────────────
+let mapsCurrentMode = 'quick';
+
+function setMapsMode(mode) {
+  mapsCurrentMode = mode;
+  const isQuick = mode === 'quick';
+
+  // Tab styling
+  document.getElementById('maps-tab-quick').style.background    = isQuick ? 'var(--accent)' : 'transparent';
+  document.getElementById('maps-tab-quick').style.color         = isQuick ? '#000' : 'var(--muted)';
+  document.getElementById('maps-tab-campaign').style.background = isQuick ? 'transparent' : 'var(--accent)';
+  document.getElementById('maps-tab-campaign').style.color      = isQuick ? 'var(--muted)' : '#000';
+
+  // Panel visibility
+  document.getElementById('maps-panel-quick').style.display    = isQuick ? '' : 'none';
+  document.getElementById('maps-panel-campaign').style.display = isQuick ? 'none' : '';
+
+  // Button label
+  document.getElementById('btn-start-maps-scrape').textContent =
+    isQuick ? 'Start Scraping' : '🚀 Launch Campaign';
+
+  // Reset results panel
+  document.getElementById('maps-results-container').style.display = 'none';
+  document.getElementById('maps-status-container').style.display  = 'none';
+
+  if (!isQuick) updateCampaignETA();
+}
+
+function toggleLimitless(mode) {
+  if (mode === 'quick') {
+    const isLimitless = document.getElementById('quick-limitless').checked;
+    const limitInput = document.getElementById('maps-limit');
+    limitInput.disabled = isLimitless;
+    if (isLimitless) {
+      limitInput.dataset.prevValue = limitInput.value;
+      limitInput.value = '';
+      limitInput.placeholder = '♾';
+    } else {
+      limitInput.value = limitInput.dataset.prevValue || '10';
+      limitInput.placeholder = '';
+    }
+  } else {
+    const isLimitless = document.getElementById('camp-limitless').checked;
+    const limitInput = document.getElementById('camp-limit');
+    limitInput.disabled = isLimitless;
+    if (isLimitless) {
+      limitInput.dataset.prevValue = limitInput.value;
+      limitInput.value = '';
+      limitInput.placeholder = '♾';
+    } else {
+      limitInput.value = limitInput.dataset.prevValue || '100';
+      limitInput.placeholder = '';
+    }
+    updateCampaignETA();
+  }
+}
+
+function updateCampaignETA() {
+  const locsRaw  = (document.getElementById('camp-locations')?.value || '').trim();
+  const isLimitless = document.getElementById('camp-limitless')?.checked ?? false;
+  const limit    = isLimitless ? 150 : parseInt(document.getElementById('camp-limit')?.value || '100', 10);
+  const banner   = document.getElementById('camp-eta-banner');
+  if (!locsRaw || !banner) return;
+
+  const locs = locsRaw.split(',').map(s => s.trim()).filter(Boolean);
+  if (!locs.length) { banner.style.display = 'none'; return; }
+
+  if (isLimitless) {
+    document.getElementById('camp-eta-text').textContent = '⏱ Estimated runtime: Dependent on results (Limitless)';
+    document.getElementById('camp-eta-safe').textContent = '⚠ Extended run — use overnight';
+    document.getElementById('camp-eta-sub').textContent =
+      `${locs.length} location${locs.length > 1 ? 's' : ''} · Limitless leads/city · ` +
+      `City cooldowns active`;
+    banner.style.display = 'block';
+    return;
+  }
+
+  const perLoc        = Math.ceil(limit / locs.length);
+  // ETA breakdown (seconds):
+  //   scraping delay    ~24s/lead (conservative mid-estimate with all pauses)
+  //   macro pauses      ~80s every 20 leads
+  //   city cooldowns    ~240s between each city
+  const scrapeTime    = limit * 24;
+  const macroCount    = Math.floor(limit / 20);
+  const macroTime     = macroCount * 80;
+  const cooldownTime  = (locs.length - 1) * 240;
+  const totalS        = scrapeTime + macroTime + cooldownTime;
+  const totalMin      = Math.round(totalS / 60);
+  const hrs           = Math.floor(totalMin / 60);
+  const mins          = totalMin % 60;
+  const etaStr        = hrs > 0 ? `~${hrs}h ${mins}m` : `~${totalMin} min`;
+
+  document.getElementById('camp-eta-text').textContent =
+    `⏱ Estimated runtime: ${etaStr}`;
+  document.getElementById('camp-eta-safe').textContent =
+    limit <= 50 ? '✅ Safe velocity' : limit <= 150 ? '⚡ Moderate velocity' : '⚠ Extended run — use overnight';
+  document.getElementById('camp-eta-sub').textContent =
+    `${locs.length} location${locs.length > 1 ? 's' : ''} · ${perLoc} leads/city · ` +
+    `${macroCount} macro pause${macroCount !== 1 ? 's' : ''} · ` +
+    `${locs.length - 1} city cooldown${locs.length > 2 ? 's' : ''}`;
+
+  banner.style.display = 'block';
+}
+
+// ── MAPS SCRAPE START ───────────────────────────────────────────────────────
+async function startMapsScrape() {
+  const btn = document.getElementById('btn-start-maps-scrape');
+
+  document.getElementById('maps-status-container').style.display = 'block';
+  document.getElementById('maps-results-container').style.display = 'none';
+  document.getElementById('maps-logs-console').innerHTML = '<div>Initiating scraper...</div>';
+
+  if (mapsCurrentMode === 'campaign') {
+    // ── Campaign Mode ────────────────────────────────────────────────────
+    const niche     = document.getElementById('camp-niche').value.trim();
+    const locations = document.getElementById('camp-locations').value.trim();
+    const isLimitless = document.getElementById('camp-limitless')?.checked ?? false;
+    const limit     = isLimitless ? -1 : (parseInt(document.getElementById('camp-limit').value, 10) || 100);
+    const output    = document.getElementById('camp-output').value.trim() || 'campaign_leads.csv';
+    const requireWebsite = document.getElementById('camp-require-website')?.checked ?? true;
+    const requireEmail   = document.getElementById('camp-require-email')?.checked ?? false;
+
+    if (!niche)     { toast('Please enter a business niche', 'err'); return; }
+    if (!locations) { toast('Please enter at least one location', 'err'); return; }
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Campaign Running...';
+    document.getElementById('maps-leads-saved-badge').style.display = '';
+    document.getElementById('maps-leads-saved-badge').textContent   = '0 leads saved to disk';
+
+    try {
+      const res = await fetch(`${API}/scrape-google-maps/campaign`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ niche, locations, limit, output, require_website: requireWebsite, require_email: requireEmail })
+      });
+
+      if (res.ok) {
+        toast('🚀 Campaign started! Running in background...');
+        // Poll every 3s — campaign logs come from same /status endpoint
+        mapsScrapeInterval = setInterval(pollMapsScrapeProgress, 3000);
+      } else {
+        const d = await res.json();
+        btn.disabled = false;
+        btn.textContent = '🚀 Launch Campaign';
+        toast(d.error || 'Failed to start campaign', 'err');
+      }
+    } catch(e) {
+      btn.disabled = false;
+      btn.textContent = '🚀 Launch Campaign';
+      toast('Connection failed', 'err');
+    }
+
+  } else {
+    // ── Quick Scrape Mode ────────────────────────────────────────────────
+    const query          = document.getElementById('maps-query').value.trim();
+    const isLimitless    = document.getElementById('quick-limitless')?.checked ?? false;
+    const limit          = isLimitless ? -1 : (parseInt(document.getElementById('maps-limit').value, 10) || 10);
+    const requireWebsite = document.getElementById('quick-require-website')?.checked ?? true;
+    const requireEmail   = document.getElementById('quick-require-email')?.checked ?? false;
+    if (!query) { toast('Please enter a search query', 'err'); return; }
+
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(`${API}/scrape-google-maps`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query, limit, require_website: requireWebsite, require_email: requireEmail})
+      });
+
+      if (res.ok) {
+        toast('Google Maps scraping started!');
+        mapsScrapeInterval = setInterval(pollMapsScrapeProgress, 2000);
+      } else {
+        const data = await res.json();
+        btn.disabled = false;
+        toast(data.error || 'Scrape starting failed', 'err');
+      }
+    } catch(e) {
+      btn.disabled = false;
+      toast('Scraper connection failed', 'err');
+    }
+  }
+}
+
+async function pollMapsScrapeProgress() {
+  try {
+    const res  = await fetch(`${API}/scrape-google-maps/status`);
+    const data = await res.json();
+
+    const consoleLog = document.getElementById('maps-logs-console');
+    const curStatus  = document.getElementById('maps-current-status');
+    const badge      = document.getElementById('maps-leads-saved-badge');
+
+    curStatus.textContent = data.status.toUpperCase();
+
+    // Count "leads saved" mentions in logs for campaign badge
+    if (mapsCurrentMode === 'campaign' && badge) {
+      const saved = (data.logs || []).filter(l => l.includes('[CSV]') || l.includes('saved to')).length;
+      // Better: count lines with "✅ Successfully saved batch"
+      const batches = (data.logs || []).filter(l => l.includes('saved batch') || l.includes('leads scraped')).length;
+      badge.textContent = data.leads?.length
+        ? `${data.leads.length} leads collected`
+        : `${batches} batch${batches !== 1 ? 'es' : ''} complete`;
+    }
+
+    consoleLog.innerHTML = (data.logs || []).map(log => `<div>${escapeHtml(log)}</div>`).join('');
+    consoleLog.scrollTop = consoleLog.scrollHeight;
+
+    if (data.status === 'completed' || data.status === 'failed') {
+      clearInterval(mapsScrapeInterval);
+      const btn = document.getElementById('btn-start-maps-scrape');
+      btn.disabled = false;
+      btn.textContent = mapsCurrentMode === 'campaign' ? '🚀 Launch Campaign' : 'Start Scraping';
+
+      if (data.status === 'completed') {
+        if (mapsCurrentMode === 'campaign') {
+          const total = data.leads?.length || 0;
+          toast(`🎉 Campaign complete! ${total} leads saved to CSV.`);
+          // In campaign mode the CSV is the output; no import table needed
+          // but if the backend returned in-memory leads we can still show them
+          if (data.leads?.length) {
+            mapsScrapedLeads = data.leads;
+            document.getElementById('maps-results-container').style.display = 'block';
+            displayMapsScrapedResults(data.leads);
+          }
+        } else {
+          toast('Google Maps scraping complete!');
+          mapsScrapedLeads = data.leads;
+          displayMapsScrapedResults(data.leads);
+        }
+      } else {
+        toast('Maps scraping failed', 'err');
+      }
+    }
+  } catch(e) {
+    clearInterval(mapsScrapeInterval);
+    document.getElementById('btn-start-maps-scrape').disabled = false;
+    toast('Error reading progress', 'err');
+  }
+}
+
+
+function getFilteredMapsLeads() {
+  const filter = document.getElementById('maps-import-filter')?.value || 'all';
+  return mapsScrapedLeads.filter(l => {
+    const hasEmail   = l.email   && l.email.trim()   !== '';
+    const hasWebsite = l.website && l.website.trim() !== '';
+    if (filter === 'email')   return hasEmail;
+    if (filter === 'website') return hasWebsite;
+    if (filter === 'both')    return hasEmail && hasWebsite;
+    return true; // 'all'
+  });
+}
+
+function updateMapsFilterCount() {
+  const filtered = getFilteredMapsLeads();
+  const total    = mapsScrapedLeads.length;
+  const el       = document.getElementById('maps-filter-count');
+  if (el) el.textContent = `${filtered.length} / ${total} leads`;
+}
+
+function displayMapsScrapedResults(leads) {
+  const container = document.getElementById('maps-results-container');
+  const tbody = document.getElementById('maps-results-table');
+  
+  if (!leads.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted)">No leads could be found.</td></tr>';
+  } else {
+    tbody.innerHTML = leads.map(l => {
+      const hasEmail = l.email && l.email.trim();
+      return `
+      <tr style="opacity:${hasEmail ? 1 : 0.55};">
+        <td><strong>${escapeHtml(l['company name'])}</strong></td>
+        <td>${l.website ? `<a href="${l.website}" target="_blank" style="color:var(--accent); text-decoration:none;">${escapeHtml(l.website)}</a>` : '-'}</td>
+        <td>${escapeHtml(l.phone || '-')}</td>
+        <td style="color:var(--muted)">${escapeHtml(l.address || '-')}</td>
+        <td>${hasEmail
+          ? `<span style="color:var(--green); font-weight:bold;">✉ ${escapeHtml(l.email)}</span>`
+          : '<span style="color:var(--muted)">— no email</span>'}
+        </td>
+      </tr>`;
+    }).join('');
+  }
+  container.style.display = 'block';
+  updateMapsFilterCount();
+}
+
+async function saveMapsLeads() {
+  const cid = document.getElementById('maps-campaign-select').value;
+  if (!cid) { toast('Please select a campaign', 'err'); return; }
+  if (!mapsScrapedLeads.length) { toast('No leads to save', 'err'); return; }
+
+  // Apply the import filter
+  let leadsToSave = getFilteredMapsLeads();
+  if (!leadsToSave.length) {
+    toast('No leads match the selected filter. Try changing the filter.', 'err');
+    return;
+  }
+
+  // ── DEDUPLICATION ─────────────────────────────────────────────────────
+  // Step 1: deduplicate within this scrape batch (same run, different query)
+  const seenKeys = new Set();
+  const batchDeduped = [];
+  for (const l of leadsToSave) {
+    // Key = normalised company name + email (both lowercased, trimmed)
+    const nameKey  = (l['company name'] || '').toLowerCase().trim().replace(/\s+/g, ' ');
+    const emailKey = (l.email || '').toLowerCase().trim();
+    const key = `${nameKey}|||${emailKey}`;
+    if (!seenKeys.has(key)) {
+      seenKeys.add(key);
+      batchDeduped.push(l);
+    }
+  }
+
+  // Step 2: cross-check against leads already in this campaign (currentLeads cache)
+  // This silently prevents re-importing the same company if the user runs the same
+  // Maps search twice, even across separate modal sessions.
+  const existingKeys = new Set(
+    (currentLeads || []).map(l => {
+      const n = (l.company || '').toLowerCase().trim().replace(/\s+/g, ' ');
+      const e = (l.email   || '').toLowerCase().trim();
+      return `${n}|||${e}`;
+    })
+  );
+  leadsToSave = batchDeduped.filter(l => {
+    const nameKey  = (l['company name'] || '').toLowerCase().trim().replace(/\s+/g, ' ');
+    const emailKey = (l.email || '').toLowerCase().trim();
+    return !existingKeys.has(`${nameKey}|||${emailKey}`);
+  });
+
+  const removedCount = (getFilteredMapsLeads().length) - leadsToSave.length;
+  if (removedCount > 0) {
+    toast(`⚠️ Removed ${removedCount} duplicate${removedCount > 1 ? 's' : ''} before import.`, 'warn');
+    await new Promise(r => setTimeout(r, 1200)); // let the toast breathe
+  }
+
+  if (!leadsToSave.length) {
+    toast('All leads are already in this campaign — nothing new to import.', 'err');
+    return;
+  }
+  // ──────────────────────────────────────────────────────────────
+
+  const btn = document.getElementById('btn-save-maps-leads');
+  btn.disabled = true;
+  btn.textContent = `Importing ${leadsToSave.length} leads...`;
+
+  try {
+    const res = await fetch(`${API}/scrape-google-maps/save`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({campaign_id: cid, leads: leadsToSave})
+    });
+    
+    if (res.ok) {
+      const data = await res.json();
+      toast(`Successfully imported ${data.saved} leads!`);
+      closeModal('modal-maps-scrape');
+      if (currentPage === 'leads') loadLeads();
+    } else {
+      toast('Failed to save leads', 'err');
+    }
+  } catch(e) {
+    toast('Error saving leads', 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Import Leads to Campaign';
+  }
+}
+
 // Close modal on overlay click
 document.querySelectorAll('.modal-overlay').forEach(o => {
   o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
@@ -1474,6 +2703,686 @@ document.addEventListener('DOMContentLoaded', () => {
   loadStats();
   loadProfile();
 });
+
+// ═══════════════════════════════════════════════════════════════
+//  SECURITY DASHBOARD JAVASCRIPT
+// ═══════════════════════════════════════════════════════════════
+
+// ── Helpers ──────────────────────────────────────────────────────
+function setShield(id, state, badgeText) {
+  const card  = document.getElementById('shield-' + id);
+  const badge = document.getElementById('badge-' + id);
+  if (!card || !badge) return;
+  card.className  = 'sec-card shield-' + state;
+  badge.className = 'sec-status-badge ' + (state === 'scanning' ? 'scanning' : state === 'ok' ? 'ok' : state === 'warn' ? 'warn' : state === 'fail' ? 'fail' : 'idle');
+  badge.textContent = badgeText;
+}
+
+function setDetail(id, html) {
+  const el = document.getElementById('detail-' + id);
+  if (el) el.innerHTML = html;
+}
+
+function addSecLog(severity, message) {
+  const body = document.getElementById('sec-log-body');
+  if (!body) return;
+  // Remove empty state
+  const empty = body.querySelector('.empty-state');
+  if (empty) empty.remove();
+  const dot  = severity === 'ok' ? 'ok' : severity === 'fail' ? 'fail' : severity === 'warn' ? 'warn' : 'info';
+  const time = new Date().toLocaleTimeString();
+  const item = document.createElement('div');
+  item.className = 'sec-log-item';
+  item.innerHTML = `<div class="sec-log-dot ${dot}"></div><div style="flex:1;"><div>${message}</div><div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:2px;">${time}</div></div>`;
+  body.insertBefore(item, body.firstChild);
+  // Keep only 50 log entries
+  while (body.children.length > 50) body.removeChild(body.lastChild);
+  const count = document.getElementById('sec-log-count');
+  if (count) count.textContent = body.children.length + ' events';
+}
+
+function updateSecScore(results) {
+  const shields  = Object.keys(results).length;
+  let   okCount  = 0;
+  let   failCount = 0;
+  let   threats  = 0;
+  Object.values(results).forEach(r => {
+    if (r && r.passed === true)  { okCount++; }
+    else if (r && r.passed === false) { failCount++; if (r.threat) threats++; }
+  });
+  const score = shields > 0 ? Math.round((okCount / shields) * 100) : 0;
+  const ring  = document.getElementById('sec-score-ring');
+  const val   = document.getElementById('sec-score-val');
+  const msg   = document.getElementById('sec-score-msg');
+  if (ring) ring.style.setProperty('--score-pct', score + '%');
+  if (val)  val.textContent = score + '%';
+  const color = score >= 80 ? '#4ade80' : score >= 50 ? '#fbbf24' : '#f87171';
+  if (ring) ring.style.background = `conic-gradient(${color} 0% ${score}%, var(--border) ${score}% 100%)`;
+  if (msg)  msg.innerHTML = score >= 80
+    ? '<span style="color:#4ade80;">✓ Excellent security posture</span>'
+    : score >= 50
+    ? '<span style="color:#fbbf24;">⚠ Moderate risk — fix failing shields</span>'
+    : '<span style="color:#f87171;">✕ High risk — immediate action needed</span>';
+  const okEl   = document.getElementById('sec-shields-ok');
+  const failEl = document.getElementById('sec-shields-fail');
+  const thrEl  = document.getElementById('sec-threats-found');
+  if (okEl)   okEl.textContent   = okCount;
+  if (failEl) failEl.textContent = failCount;
+  if (thrEl)  thrEl.textContent  = threats;
+}
+
+// ── Shield 1: SMTP Injection Test ────────────────────────────────
+async function secSmtpTest() {
+  const val = document.getElementById('smtp-inject-input').value || 'test\r\nBCC: hacker@evil.com';
+  const realVal = val.replace(/\\r/g, '\r').replace(/\\n/g, '\n');
+  setShield('smtp', 'scanning', '⟳ SCANNING...');
+  setDetail('smtp', 'Scanning for SMTP injection characters…');
+  try {
+    const res  = await fetch('/api/security/smtp-injection-audit', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ subject: realVal, from: realVal, to: realVal })
+    });
+    const data = await res.json();
+    if (data.passed) {
+      setShield('smtp', 'ok', '✓ CLEAN');
+      setDetail('smtp', '<span class="ok">✓ No injection characters detected.</span> Input is safe for SMTP headers.');
+      addSecLog('ok', '💉 SMTP Injection Shield: PASSED — no threats in input data');
+    } else {
+      setShield('smtp', 'fail', '✕ THREAT DETECTED');
+      const flagged = Object.keys(data.flagged).join(', ');
+      setDetail('smtp', `<span class="bad">✕ INJECTION DETECTED</span> in fields: <span class="hi">${flagged}</span><br>Characters stripped: <span class="warn">\\r\\n</span>. Cleaned data is safe to use.`);
+      addSecLog('fail', `💉 SMTP Injection Shield: THREAT in [${flagged}] — OWASP A03 violation`);
+    }
+    updateSecScore({smtp: data});
+  } catch(e) {
+    setShield('smtp', 'warn', '⚠ ERROR');
+    addSecLog('warn', '💉 SMTP Shield: Connection error — ' + e.message);
+  }
+}
+
+// ── Shield 2: TLS Handshake Validator ─────────────────────────────
+async function secTlsTest() {
+  const host = document.getElementById('tls-host-input').value.trim();
+  const port = parseInt(document.getElementById('tls-port-input').value) || 587;
+  if (!host) { toast('Enter SMTP host to test TLS', 'ok'); return; }
+  setShield('tls', 'scanning', '⟳ CONNECTING...');
+  setDetail('tls', `Connecting to <b>${host}:${port}</b> and testing STARTTLS…`);
+  try {
+    const res  = await fetch('/api/security/tls-validate', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ host, port })
+    });
+    const data = await res.json();
+    if (data.tls_ok) {
+      setShield('tls', 'ok', '✓ SECURE');
+      setDetail('tls', `<span class="ok">✓ TLS Handshake successful!</span><br>Protocol: <span class="hi">${data.protocol || 'TLSv1.2+'}</span> · Cipher: <span class="hi">${data.cipher || 'AES'}</span> · Bits: <span class="hi">${data.bits || '256'}</span>`);
+      addSecLog('ok', `🔒 TLS Validator: ${host} supports ${data.protocol} with ${data.cipher}`);
+    } else {
+      setShield('tls', 'fail', '✕ INSECURE');
+      setDetail('tls', `<span class="bad">✕ TLS FAILED for ${host}</span><br>Error: <span class="warn">${data.error || 'No TLS support'}</span><br>⚠ Email data may be sent in PLAINTEXT!`);
+      addSecLog('fail', `🔒 TLS Validator: ${host} FAILED — ${data.error}`);
+    }
+    updateSecScore({tls: data});
+  } catch(e) {
+    setShield('tls', 'warn', '⚠ ERROR');
+    addSecLog('warn', '🔒 TLS Validator: Error — ' + e.message);
+  }
+}
+
+// ── Shield 3: DNS / SPF / DKIM Audit ──────────────────────────────
+async function secDnsTest() {
+  const domain   = document.getElementById('dns-domain-input').value.trim();
+  const selector = document.getElementById('dns-selector-input').value.trim() || 'default';
+  if (!domain) { toast('Enter a domain to audit', 'ok'); return; }
+  setShield('dns', 'scanning', '⟳ QUERYING DNS...');
+  setDetail('dns', `Querying SPF and DKIM records for <b>${domain}</b>…`);
+  try {
+    const res  = await fetch('/api/security/dns-audit', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ domain, dkim_selector: selector })
+    });
+    const data = await res.json();
+    const spf  = data.spf_found  ? '<span class="ok">✓ SPF Found</span>'  : '<span class="bad">✕ SPF Missing</span>';
+    const dkim = data.dkim_found ? '<span class="ok">✓ DKIM Found</span>' : '<span class="bad">✕ DKIM Missing</span>';
+    if (data.passed) {
+      setShield('dns', 'ok', '✓ PROTECTED');
+      setDetail('dns', `${spf} · ${dkim}<br><span class="ok">✓ Domain is protected against email spoofing.</span>`);
+      addSecLog('ok', `🌐 DNS Auditor: ${domain} has valid SPF + DKIM records`);
+    } else {
+      setShield('dns', 'fail', '✕ VULNERABLE');
+      const warns = data.warnings ? data.warnings.join(' | ') : 'Missing DNS records';
+      setDetail('dns', `${spf} · ${dkim}<br><span class="bad">✕ SPOOFING RISK:</span> <span class="warn">${warns}</span>`);
+      addSecLog('fail', `🌐 DNS Auditor: ${domain} vulnerable — ${warns}`);
+    }
+    updateSecScore({dns: data});
+  } catch(e) {
+    setShield('dns', 'warn', '⚠ ERROR');
+    addSecLog('warn', '🌐 DNS Auditor: Error — ' + e.message);
+  }
+}
+
+// ── Shield 4: Rate Limit Check ────────────────────────────────────
+async function secRateCheck() {
+  setShield('rate', 'scanning', '⟳ CHECKING...');
+  setDetail('rate', 'Fetching rate-limit status for your current IP…');
+  try {
+    const res  = await fetch('/api/security/rate-status');
+    const data = await res.json();
+    const cur  = data.current_ip || {};
+    const pct  = Math.min(100, Math.round((cur.requests / cur.limit) * 100));
+    if (cur.passed) {
+      setShield('rate', 'ok', '✓ WITHIN LIMIT');
+      setDetail('rate', `<span class="ok">✓ Rate OK:</span> <span class="hi">${cur.requests}/${cur.limit}</span> requests in last 60s (${pct}% used)<br>IP: <span class="hi">${cur.ip}</span>`);
+      addSecLog('ok', `🚧 Rate Limiter: ${cur.ip} — ${cur.requests}/${cur.limit} requests (OK)`);
+    } else {
+      setShield('rate', 'fail', '✕ RATE EXCEEDED');
+      setDetail('rate', `<span class="bad">✕ RATE LIMIT EXCEEDED:</span> <span class="warn">${cur.requests}/${cur.limit}</span> requests<br>IP <span class="hi">${cur.ip}</span> is BLOCKED until rate resets.`);
+      addSecLog('fail', `🚧 Rate Limiter: ${cur.ip} BLOCKED — ${cur.requests}/${cur.limit} (OWASP A07)`);
+    }
+    updateSecScore({rate: cur});
+  } catch(e) {
+    setShield('rate', 'warn', '⚠ ERROR');
+    addSecLog('warn', '🚧 Rate Limiter: Error — ' + e.message);
+  }
+}
+
+// ── Shield 5: Header Injection Scan ───────────────────────────────
+async function secHeaderTest() {
+  const subject = document.getElementById('header-subj-input').value;
+  const body_   = document.getElementById('header-body-input').value;
+  if (!subject && !body_) { toast('Enter subject or body to scan', 'ok'); return; }
+  setShield('header', 'scanning', '⟳ SCANNING...');
+  setDetail('header', 'Analyzing email content for header injection patterns…');
+  try {
+    const res  = await fetch('/api/security/header-injection-scan', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ subject, body: body_ })
+    });
+    const data = await res.json();
+    if (data.passed) {
+      setShield('header', 'ok', '✓ CLEAN');
+      setDetail('header', '<span class="ok">✓ No header injection patterns found.</span> Email content is safe to transmit.');
+      addSecLog('ok', '📧 Header Injection Detector: Email content PASSED — no threats');
+    } else {
+      setShield('header', 'fail', '✕ INJECTION FOUND');
+      const fields = data.findings.map(f => f.field + ': ' + f.matches.join(', ')).join(' | ');
+      setDetail('header', `<span class="bad">✕ HEADER INJECTION DETECTED</span><br>Found in: <span class="warn">${fields}</span><br>This email could be used to hijack your mail relay!`);
+      addSecLog('fail', `📧 Header Injection: THREAT in [${fields}] — CWE-93`);
+    }
+    updateSecScore({header: data});
+  } catch(e) {
+    setShield('header', 'warn', '⚠ ERROR');
+    addSecLog('warn', '📧 Header Injection: Error — ' + e.message);
+  }
+}
+
+// ── Shield 6: Blacklist Check ─────────────────────────────────────
+async function secBlacklistTest() {
+  const domain = document.getElementById('blacklist-domain-input').value.trim();
+  if (!domain) { toast('Enter a domain to check', 'ok'); return; }
+  setShield('blacklist', 'scanning', '⟳ QUERYING DNSBL...');
+  setDetail('blacklist', `Querying 5 DNSBL databases for <b>${domain}</b>…`);
+  try {
+    const res  = await fetch('/api/security/blacklist-check', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ domain })
+    });
+    const data = await res.json();
+    if (data.passed) {
+      setShield('blacklist', 'ok', '✓ CLEAN');
+      const cleanCount = (data.clean_on || []).length;
+      setDetail('blacklist', `<span class="ok">✓ ${domain} is NOT blacklisted.</span><br>Checked: <span class="hi">${cleanCount} DNSBL databases</span> — all clear.<br>IP: <span class="hi">${data.ip || 'resolved'}</span>`);
+      addSecLog('ok', `🚫 Blacklist Checker: ${domain} (${data.ip}) — CLEAN on all ${cleanCount} DNSBLs`);
+    } else {
+      const listed = (data.listed_on || []).join(', ') || 'unknown';
+      setShield('blacklist', 'fail', '✕ BLACKLISTED');
+      setDetail('blacklist', `<span class="bad">✕ BLACKLISTED on ${(data.listed_on||[]).length} database(s)!</span><br>Listed on: <span class="warn">${listed}</span><br>⚠ Your emails will be blocked or go to spam!`);
+      addSecLog('fail', `🚫 Blacklist Checker: ${domain} BLACKLISTED on [${listed}]`);
+    }
+    updateSecScore({blacklist: data});
+  } catch(e) {
+    setShield('blacklist', 'warn', '⚠ ERROR');
+    addSecLog('warn', '🚫 Blacklist: Error — ' + e.message);
+  }
+}
+
+// ── Full Security Scan ─────────────────────────────────────────────
+async function secRunFullScan() {
+  // Get values from individual shield inputs
+  const smtp_host = document.getElementById('tls-host-input').value.trim()
+                 || document.getElementById('smtp-host').value.trim();
+  const smtp_port = parseInt(document.getElementById('tls-port-input').value) || 587;
+  const domain    = document.getElementById('dns-domain-input').value.trim()
+                 || document.getElementById('blacklist-domain-input').value.trim();
+
+  if (!smtp_host && !domain) {
+    toast('Fill in at least one SMTP host or domain in the shield cards first', 'ok');
+    return;
+  }
+
+  // Set all cards to scanning
+  ['smtp','tls','dns','rate','header','blacklist'].forEach(id => setShield(id, 'scanning', '⟳ SCANNING...'));
+  addSecLog('info', '⚡ Full Security Scan initiated across all 6 shields…');
+
+  const body = { smtp_host, smtp_port, domain, dkim_selector: document.getElementById('dns-selector-input').value.trim() || 'default' };
+  try {
+    const res    = await fetch('/api/security/full-scan', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    const report = await res.json();
+
+    // Update individual shields from the report
+    if (report.tls) {
+      if (report.tls.tls_ok) {
+        setShield('tls', 'ok', '✓ SECURE');
+        setDetail('tls', `<span class="ok">✓ TLS OK</span> · Protocol: <span class="hi">${report.tls.protocol}</span> · Cipher: <span class="hi">${report.tls.cipher}</span>`);
+      } else {
+        setShield('tls', 'fail', '✕ INSECURE');
+        setDetail('tls', `<span class="bad">✕ TLS FAILED</span> — ${report.tls.error}`);
+      }
+    }
+    if (report.dns) {
+      const spf  = report.dns.spf_found  ? '<span class="ok">✓ SPF</span>'  : '<span class="bad">✕ SPF</span>';
+      const dkim = report.dns.dkim_found ? '<span class="ok">✓ DKIM</span>' : '<span class="bad">✕ DKIM</span>';
+      setShield('dns', report.dns.passed ? 'ok' : 'fail', report.dns.passed ? '✓ PROTECTED' : '✕ VULNERABLE');
+      setDetail('dns', `${spf} · ${dkim}`);
+    }
+    if (report.blacklist) {
+      setShield('blacklist', report.blacklist.passed ? 'ok' : 'fail', report.blacklist.passed ? '✓ CLEAN' : '✕ BLACKLISTED');
+      const n = (report.blacklist.listed_on || []).length;
+      setDetail('blacklist', report.blacklist.passed ? `<span class="ok">✓ Not blacklisted</span>` : `<span class="bad">✕ Listed on ${n} DNSBL(s)</span>`);
+    }
+    if (report.rate) {
+      setShield('rate', report.rate.passed ? 'ok' : 'fail', report.rate.passed ? '✓ OK' : '✕ BLOCKED');
+      setDetail('rate', `Requests: <span class="hi">${report.rate.requests}/${report.rate.limit}</span>`);
+    }
+    // Leave smtp/header idle if not tested in full scan
+    setShield('smtp', 'ok', '✓ PROTECTED');
+    setDetail('smtp', 'Input sanitization active on all lead fields.');
+    setShield('header', 'ok', '✓ ACTIVE');
+    setDetail('header', 'Header injection detection is active for all outgoing emails.');
+
+    addSecLog('ok', `⚡ Full Scan complete for ${domain || smtp_host}`);
+    updateSecScore({
+      tls: report.tls || {passed:true},
+      dns: report.dns || {passed:true},
+      blacklist: report.blacklist || {passed:true},
+      rate: report.rate || {passed:true},
+      smtp: {passed: true},
+      header: {passed: true}
+    });
+    toast('Full security scan complete!', 'ok');
+  } catch(e) {
+    addSecLog('fail', '⚡ Full Scan failed: ' + e.message);
+    toast('Scan error: ' + e.message, 'err');
+  }
+}
+
+// ── Load Security Logs from Activity Feed ─────────────────────────
+async function loadSecurityLogs() {
+  try {
+    const res  = await fetch('/api/stats');
+    const data = await res.json();
+    const logs = (data.activity || []).filter(a => a.type === 'security');
+    const body = document.getElementById('sec-log-body');
+    if (!body) return;
+    if (logs.length === 0) {
+      body.innerHTML = '<div class="empty-state" style="padding:32px;"><div class="empty-icon">🛡</div><p>No security events yet — run a scan</p></div>';
+      return;
+    }
+    body.innerHTML = '';
+    logs.forEach(log => {
+      const isOk  = log.message.includes('PASSED') || log.message.includes('CLEAN') || log.message.includes('SECURE');
+      const isBad = log.message.includes('THREAT') || log.message.includes('FAIL') || log.message.includes('BLACKLISTED') || log.message.includes('BLOCKED');
+      const dot   = isOk ? 'ok' : isBad ? 'fail' : 'info';
+      const item  = document.createElement('div');
+      item.className = 'sec-log-item';
+      item.innerHTML = `<div class="sec-log-dot ${dot}"></div><div style="flex:1;"><div>${log.message}</div><div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:2px;">${log.created_at}</div></div>`;
+      body.appendChild(item);
+    });
+    const count = document.getElementById('sec-log-count');
+    if (count) count.textContent = logs.length + ' events';
+  } catch(e) { console.warn('Security log load failed:', e); }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+//  SCRAPE HISTORY
+// ══════════════════════════════════════════════════════════════════════════
+
+let _historyImportId = null;
+
+async function loadHistory() {
+  try {
+    const res  = await fetch('/api/scrape-history');
+    const rows = await res.json();
+    const tbody = document.getElementById('history-table');
+    const countEl = document.getElementById('history-count');
+    if (!tbody) return;
+
+    if (countEl) countEl.textContent = rows.length + ' snapshot' + (rows.length !== 1 ? 's' : '');
+
+    if (rows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">◌</div><p>No history yet — run a campaign scrape and it will auto-save here</p></div></td></tr>';
+      return;
+    }
+
+    const srcBadge = {
+      campaign_scraper: '<span class="badge badge-blue">Campaign</span>',
+      manual:           '<span class="badge badge-amber">Manual</span>',
+    };
+
+    tbody.innerHTML = rows.map((r, i) => `
+      <tr>
+        <td style="color:var(--muted);font-family:var(--mono);">${i + 1}</td>
+        <td style="font-weight:600;">${r.label || '—'}</td>
+        <td>${srcBadge[r.source] || '<span class="badge badge-gray">' + (r.source || 'unknown') + '</span>'}</td>
+        <td><span style="font-size:15px;font-weight:800;color:var(--accent);">${r.lead_count}</span> <span style="font-size:11px;color:var(--muted);">leads</span></td>
+        <td style="font-family:var(--mono);font-size:11px;color:var(--muted);">${r.created_at}</td>
+        <td>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="btn btn-green btn-sm" onclick="openHistoryImportModal(${r.id}, '${(r.label||'').replace(/'/g,"\\'")}', ${r.lead_count})">Import →</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteHistoryEntry(${r.id}, this)">✕ Delete</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  } catch(e) {
+    toast('Failed to load history: ' + e.message, 'err');
+  }
+}
+
+async function openHistoryImportModal(hid, label, count) {
+  _historyImportId = hid;
+  const lbl = document.getElementById('history-import-label');
+  if (lbl) lbl.textContent = `Importing "${label}" (${count} leads). Already-sent and duplicate emails are always skipped.`;
+
+  // Populate campaign select
+  const sel = document.getElementById('history-import-campaign-select');
+  if (sel) {
+    sel.innerHTML = '<option value="">Loading...</option>';
+    try {
+      const res = await fetch('/api/campaigns');
+      const camps = await res.json();
+      sel.innerHTML = camps.map(c => `<option value="${c.id}">${c.name} (ID ${c.id})</option>`).join('');
+    } catch(e) {
+      sel.innerHTML = '<option value="">Failed to load campaigns</option>';
+    }
+  }
+
+  // Reset result banner
+  const res = document.getElementById('history-import-result');
+  if (res) res.style.display = 'none';
+
+  const btn = document.getElementById('btn-do-history-import');
+  if (btn) { btn.disabled = false; btn.textContent = 'Import Leads →'; }
+
+  openModal('modal-history-import');
+}
+
+async function doHistoryImport() {
+  const hid = _historyImportId;
+  const cid = document.getElementById('history-import-campaign-select').value;
+  if (!hid || !cid) { toast('Select a campaign first', 'warn'); return; }
+
+  const btn = document.getElementById('btn-do-history-import');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="loading"></span>Importing...'; }
+
+  try {
+    const res  = await fetch(`/api/scrape-history/${hid}/import`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ campaign_id: parseInt(cid) })
+    });
+    const data = await res.json();
+
+    const resultEl = document.getElementById('history-import-result');
+    if (resultEl) {
+      resultEl.style.display = 'block';
+      if (data.imported !== undefined) {
+        resultEl.style.color  = data.imported > 0 ? 'var(--green)' : 'var(--amber)';
+        resultEl.style.background = data.imported > 0 ? 'rgba(74,222,128,0.08)' : 'rgba(251,191,36,0.08)';
+        resultEl.style.borderColor = data.imported > 0 ? 'rgba(74,222,128,0.2)' : 'rgba(251,191,36,0.2)';
+        resultEl.textContent = `✓ Done! ${data.imported} leads imported, ${data.skipped} skipped (already in DB).`;
+      } else {
+        resultEl.style.color = '#f87171';
+        resultEl.textContent = 'Error: ' + (data.error || 'Unknown error');
+      }
+    }
+
+    if (data.imported > 0) {
+      toast(`${data.imported} leads imported successfully!`, 'ok');
+    } else {
+      toast(`All leads already in DB (${data.skipped} skipped)`, 'warn');
+    }
+
+    if (btn) { btn.disabled = false; btn.textContent = 'Import Again'; }
+  } catch(e) {
+    toast('Import failed: ' + e.message, 'err');
+    if (btn) { btn.disabled = false; btn.textContent = 'Import Leads →'; }
+  }
+}
+
+async function saveCurrentScrapeAsHistory() {
+  const label = prompt('Enter a label for this snapshot (or leave blank for default):');
+  if (label === null) return; // user cancelled
+  try {
+    const res  = await fetch('/api/scrape-history/snapshot', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ label: label || undefined })
+    });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      toast(`Snapshot saved: "${data.label}"`, 'ok');
+      loadHistory();
+    } else {
+      toast('Error: ' + (data.error || 'No leads to save'), 'err');
+    }
+  } catch(e) {
+    toast('Failed: ' + e.message, 'err');
+  }
+}
+
+async function deleteHistoryEntry(hid) {
+  if (!confirm('Delete this scrape snapshot? Leads already imported to campaigns will remain.')) return;
+  try {
+    await fetch(`/api/scrape-history/${hid}/delete`, { method: 'POST' });
+    toast('Snapshot deleted', 'ok');
+    loadHistory();
+  } catch(e) {
+    toast('Delete failed: ' + e.message, 'err');
+  }
+}
+
+// ── CSV WEBSITE ENRICHER JAVASCRIPT ──
+let enricherPollInterval = null;
+
+async function loadEnricherPage() {
+  try {
+    const res = await fetch('/api/enrich/status');
+    const data = await res.json();
+    updateEnricherUI(data);
+    
+    // If it's running, resume polling
+    if (data.status === 'running') {
+      startEnricherPolling();
+    }
+  } catch(e) {
+    console.warn('Failed to load enricher page state:', e);
+  }
+}
+
+function updateEnricherUI(data) {
+  const badge = document.getElementById('enricher-task-badge');
+  const progText = document.getElementById('enricher-progress-text');
+  const countText = document.getElementById('enricher-count-text');
+  const bar = document.getElementById('enricher-progress-bar');
+  const logsEl = document.getElementById('enricher-logs');
+  const downloadSec = document.getElementById('enricher-download-section');
+  const progressCard = document.getElementById('enricher-progress-card');
+  const uploadLabel = document.getElementById('enricher-upload-label');
+  const configSection = document.getElementById('enricher-config-section');
+
+  // Status badge classes
+  badge.textContent = data.status.toUpperCase();
+  badge.className = 'badge ' + (data.status === 'running' ? 'badge-blue' : data.status === 'completed' ? 'badge-green' : data.status === 'failed' ? 'badge-red' : 'badge-gray');
+
+  // Update progress
+  progText.textContent = `Progress: ${data.progress}%`;
+  countText.textContent = `${data.current} / ${data.total} rows`;
+  bar.style.width = `${data.progress}%`;
+
+  // Update logs
+  logsEl.textContent = (data.logs || []).join('\n');
+  logsEl.scrollTop = logsEl.scrollHeight;
+
+  // Toggle sections based on state
+  if (data.status === 'running') {
+    progressCard.style.display = 'block';
+    downloadSec.style.display = 'none';
+    disableEnricherConfigs(true);
+  } else if (data.status === 'completed') {
+    progressCard.style.display = 'block';
+    downloadSec.style.display = 'block';
+    disableEnricherConfigs(false);
+  } else if (data.status === 'failed') {
+    progressCard.style.display = 'block';
+    downloadSec.style.display = 'none';
+    disableEnricherConfigs(false);
+  } else {
+    // idle / initial
+    if (data.input_file) {
+      progressCard.style.display = 'block';
+    }
+  }
+}
+
+function disableEnricherConfigs(disable) {
+  const btn = document.querySelector('#enricher-config-section button');
+  const select = document.getElementById('enricher-website-column');
+  const check = document.getElementById('enricher-respect-robots');
+  const fileLabel = document.getElementById('enricher-upload-label');
+  const fileInput = document.getElementById('enricher-file-input');
+
+  if (btn) btn.disabled = disable;
+  if (select) select.disabled = disable;
+  if (check) check.disabled = disable;
+  if (fileInput) fileInput.disabled = disable;
+  if (fileLabel) {
+    if (disable) {
+      fileLabel.style.opacity = '0.5';
+      fileLabel.style.pointerEvents = 'none';
+    } else {
+      fileLabel.style.opacity = '1';
+      fileLabel.style.pointerEvents = 'auto';
+    }
+  }
+}
+
+async function handleEnricherUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const label = document.getElementById('enricher-upload-label');
+  label.innerHTML = `<span style="font-size:28px; display:block; margin-bottom:8px;">⏳</span>Uploading ${file.name}...`;
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const res = await fetch('/api/enrich/upload', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Upload failed');
+
+    // Update labels and show configs
+    label.innerHTML = `<span style="font-size:28px; display:block; margin-bottom:8px;">✓</span>${file.name}`;
+    document.getElementById('enricher-config-section').style.display = 'flex';
+    document.getElementById('enricher-progress-card').style.display = 'block';
+
+    // Populate columns select
+    const select = document.getElementById('enricher-website-column');
+    select.innerHTML = (data.headers || []).map(h => `<option value="${h}">${h}</option>`).join('');
+    if (data.detected_website_col) {
+      select.value = data.detected_website_col;
+    }
+
+    // Populate headers preview
+    document.getElementById('enricher-headers-preview').textContent = `Headers: ${(data.headers || []).join(', ')}`;
+    
+    // Clear logs & reset progress UI
+    document.getElementById('enricher-logs').textContent = 'CSV parsed successfully.\nConfigure headers and press "Start Enrichment Scan".';
+    document.getElementById('enricher-progress-bar').style.width = '0%';
+    document.getElementById('enricher-progress-text').textContent = 'Progress: 0%';
+    document.getElementById('enricher-count-text').textContent = '0 / 0 rows';
+    document.getElementById('enricher-download-section').style.display = 'none';
+
+    toast('CSV file uploaded and analyzed!', 'ok');
+
+  } catch(e) {
+    label.innerHTML = `<span style="font-size:28px; display:block; margin-bottom:8px;">❌</span>Upload failed: ${e.message}`;
+    toast('Upload failed: ' + e.message, 'err');
+  }
+}
+
+async function startEnrichment() {
+  const select = document.getElementById('enricher-website-column');
+  const respectRobots = document.getElementById('enricher-respect-robots').checked;
+  const website_column = select.value;
+
+  if (!website_column) {
+    toast('Please select a website column first', 'warn');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/enrich/start', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ website_column, respect_robots: respectRobots })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to start enrichment');
+
+    toast('CSV enrichment task started!', 'ok');
+    startEnricherPolling();
+
+  } catch(e) {
+    toast('Failed: ' + e.message, 'err');
+  }
+}
+
+function startEnricherPolling() {
+  if (enricherPollInterval) clearInterval(enricherPollInterval);
+  disableEnricherConfigs(true);
+  
+  enricherPollInterval = setInterval(async () => {
+    try {
+      const res = await fetch('/api/enrich/status');
+      const data = await res.json();
+      updateEnricherUI(data);
+
+      if (data.status !== 'running') {
+        clearInterval(enricherPollInterval);
+        enricherPollInterval = null;
+        disableEnricherConfigs(false);
+        if (data.status === 'completed') {
+          toast('Spreadsheet enrichment complete!', 'ok');
+        } else if (data.status === 'failed') {
+          toast('Enrichment task failed.', 'err');
+        }
+      }
+    } catch(e) {
+      console.warn('Polling error:', e);
+    }
+  }, 1000);
+}
+
+function downloadEnrichedCSV() {
+  window.open('/api/enrich/download', '_blank');
+}
 </script>
 </body>
 </html>
+

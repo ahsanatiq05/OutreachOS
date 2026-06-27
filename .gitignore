@@ -1,10 +1,39 @@
+# ── Secrets & Environment ─────────────────────────────────────────────────────
 .env
+
+# ── Python ────────────────────────────────────────────────────────────────────
 .venv/
 __pycache__/
 *.pyc
-agency.db
-resumes/
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# ── Databases ─────────────────────────────────────────────────────────────────
+*.db
 *.db-shm
 *.db-wal
-.notebook/
+
+# ── Uploaded / Scraped Data (may contain personal data) ──────────────────────
+*.csv
+resumes/
 scratch/
+
+# ── Debug Screenshots (scraper artifacts) ────────────────────────────────────
+*.png
+*.jpg
+*.jpeg
+
+# ── Notebook & IDE ────────────────────────────────────────────────────────────
+.notebook/
+.vscode/
+.idea/
+
+# ── OS files ─────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Nested project copy ───────────────────────────────────────────────────────
+OutreachOS/
